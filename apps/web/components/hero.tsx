@@ -1,0 +1,13 @@
+import React from "react";
+import { SearchInput } from "./search-input";
+
+export const Hero = () => {
+  return (
+    <div className="bg-primary h-[22rem] md:h-[25rem] flex flex-col text-center items-center justify-center space-y-[5rem]">
+      <h1 className="font-bold text-3xl md:text-4xl text-white w-[55%] md:w-[42%]">
+        Hey Techie! 👋 What are you shopping for today?
+      </h1>
+      <SearchInput placeholder="Find Products" />
+    </div>
+  );
+};

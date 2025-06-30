@@ -1,5 +1,9 @@
-import { Button } from "@repo/ui/components/ui/button";
+import { Hero } from "../components/hero";
 
 export default function Home() {
-  return <Button variant="destructive">Click Me</Button>;
+  return (
+    <div>
+      <Hero />
+    </div>
+  );
 }
