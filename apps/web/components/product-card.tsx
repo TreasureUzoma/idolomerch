@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
@@ -20,6 +20,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   image,
   onAddToCart,
 }) => {
+  const [added, setAdded] = useState(false);
+
+  const handleAdd = () => {
+    if (onAddToCart) onAddToCart();
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200); // show checkmark for 1.2s
+  };
+
   return (
     <div>
       <Link href={`/product/${id}`}>
@@ -35,17 +43,21 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="p-3 flex flex-col h-[110px]">
         <div className="flex items-start justify-between gap-2">
-          <Link href={`/product/${id}`}>
+          <Link href={`/product/${id}`} className="flex-1">
             <h3 className="text-sm font-semibold line-clamp-2 leading-snug">
               {title}
             </h3>
           </Link>
           <button
-            onClick={onAddToCart}
-            className="text-primary bg-primary bg-opacity-10 rounded-full w-9 h-9 flex items-center justify-center hover:bg-primary hover:text-white transition"
+            onClick={handleAdd}
+            className="shrink-0 text-primary bg-primary bg-opacity-10 rounded-full w-[2.125rem] h-[2.125rem] flex items-center justify-center hover:bg-primary hover:text-white transition"
             aria-label="Add to Cart"
           >
-            <Plus className="w-4 h-4" />
+            {added ? (
+              <Check className="w-4 h-4" />
+            ) : (
+              <Plus className="w-4 h-4" />
+            )}
           </button>
         </div>
         <p className="text-sm font-medium text-gray-900">
