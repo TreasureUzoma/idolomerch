@@ -41,7 +41,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </Link>
 
-      <div className="p-3 flex flex-col h-[110px]">
+      <div className="p-3 flex flex-col h-[110px] -mt-2 md:mt-0">
         <div className="flex items-start justify-between gap-2">
           <Link href={`/product/${id}`} className="flex-1">
             <h3 className="text-sm font-semibold line-clamp-2 leading-snug">

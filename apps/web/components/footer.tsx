@@ -20,7 +20,7 @@ export const Footer = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
-            About
+            Developer
           </a>
           <a
             href="https://github.com/treasureuzoma/idolomerch"
