@@ -51,7 +51,7 @@ export default function Page({ params }: Props) {
           className="rounded-2xl object-cover w-full h-auto"
         />
       </div>
-      <button className="block w-full py-3 rounded-md mb-auto">
+      <button className="block w-full py-3 rounded-md mb-auto bg-accent text-white hover:bg-opacity-90 sticky bottom-3">
         Add to cart
       </button>
     </div>
