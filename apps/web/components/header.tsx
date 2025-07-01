@@ -6,6 +6,12 @@ import Link from "next/link";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Refunds Policy", href: "/refunds-policy" },
+    { label: "Contact", href: "/contact" },
+  ];
 
   return (
     <header className="py-4 sticky top-0 left-0 right-0 shadow-sm bg-white z-50">
@@ -45,19 +51,17 @@ export const Header = () => {
           <X size={24} />
         </button>
 
-        <nav className="mt-12 flex flex-col gap-6 font-medium">
-          <Link href="/" onClick={() => setMenuOpen(false)}>
-            Home
-          </Link>
-          <Link href="/privacy" onClick={() => setMenuOpen(false)}>
-            Privacy Policy
-          </Link>
-          <Link href="/refunds-policy" onClick={() => setMenuOpen(false)}>
-            Refunds Policy
-          </Link>
-          <Link href="/contact" onClick={() => setMenuOpen(false)}>
-            Contact
-          </Link>
+        <nav className="mt-12 flex flex-col gap-6 text-gray-800 font-medium">
+          {navLinks.map(({ label, href }) => (
+            <Link
+              key={href}
+              href={href}
+              onClick={() => setMenuOpen(false)}
+              className="transition-colors hover:text-primary"
+            >
+              {label}
+            </Link>
+          ))}
         </nav>
       </div>
     </header>
