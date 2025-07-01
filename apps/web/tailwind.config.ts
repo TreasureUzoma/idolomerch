@@ -6,6 +6,10 @@ const webConfig = {
   presets: [config],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["Switzer", "sans-serif"],
+        display: ["Clash Display", "sans-serif"],
+      },
       colors: {
         test: {
           100: "#f2e8e5",
