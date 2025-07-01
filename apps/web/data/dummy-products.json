@@ -1,0 +1,166 @@
+[
+  {
+    "id": "idolo-classic-t-shirt",
+    "title": "Idolo Classic T-Shirt",
+    "description": "Soft cotton unisex tee with the iconic Idolo logo. Perfect for everyday wear.",
+    "price": 25,
+    "currency": "USD",
+    "category": "Clothing",
+    "image": "/images/image.png",
+    "status": "hot",
+    "stock": 120,
+    "options": {
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        { "name": "Black", "image": "/images/colors/black.png" },
+        { "name": "White", "image": "/images/colors/white.png" },
+        { "name": "Gray", "image": "/images/colors/gray.png" }
+      ]
+    },
+    "tags": ["t-shirt", "cotton", "logo"]
+  },
+  {
+    "id": "idolo-logo-cap",
+    "title": "Idolo Logo Cap",
+    "description": "Adjustable black cap with embroidered Idolo branding. Stay shaded in style.",
+    "price": 18,
+    "currency": "USD",
+    "category": "Accessories",
+    "image": "/images/image.png",
+    "status": "trending",
+    "stock": 80,
+    "options": {
+      "colors": [
+        { "name": "Black", "image": "/images/colors/black.png" },
+        { "name": "Navy", "image": "/images/colors/navy.png" }
+      ]
+    },
+    "tags": ["cap", "hat", "accessory"]
+  },
+  {
+    "id": "holographic-sticker-pack",
+    "title": "Holographic Sticker Pack",
+    "description": "Pack of 5 high-quality holographic stickers featuring Idolo designs.",
+    "price": 7,
+    "currency": "USD",
+    "category": "Stickers",
+    "image": "/images/image.png",
+    "status": "new",
+    "stock": 200,
+    "options": {},
+    "tags": ["stickers", "holographic", "pack"]
+  },
+  {
+    "id": "idolo-hoodie",
+    "title": "Idolo Hoodie",
+    "description": "Cozy fleece hoodie with front pocket and bold print on the back.",
+    "price": 45,
+    "currency": "USD",
+    "category": "Clothing",
+    "image": "/images/image.png",
+    "status": "bestseller",
+    "stock": 65,
+    "options": {
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        { "name": "Black", "image": "/images/colors/black.png" },
+        { "name": "Heather Gray", "image": "/images/colors/heather-gray.png" }
+      ]
+    },
+    "tags": ["hoodie", "fleece", "sweater"]
+  },
+  {
+    "id": "limited-edition-poster",
+    "title": "Limited Edition Poster",
+    "description": "A3 print poster featuring custom Idolo artwork. Only 100 copies printed.",
+    "price": 12,
+    "currency": "USD",
+    "category": "Art",
+    "image": "/images/image.png",
+    "status": "limited",
+    "stock": 25,
+    "options": {},
+    "tags": ["poster", "art", "limited"]
+  },
+  {
+    "id": "idolo-beanie",
+    "title": "Idolo Beanie",
+    "description": "Knitted beanie available in black and grey with woven logo tag.",
+    "price": 15,
+    "currency": "USD",
+    "category": "Accessories",
+    "image": "/images/image.png",
+    "status": "hot",
+    "stock": 100,
+    "options": {
+      "colors": [
+        { "name": "Black", "image": "/images/colors/black.png" },
+        { "name": "Gray", "image": "/images/colors/gray.png" }
+      ]
+    },
+    "tags": ["beanie", "hat", "knit"]
+  },
+  {
+    "id": "vinyl-sticker-sheet",
+    "title": "Vinyl Sticker Sheet",
+    "description": "Waterproof, kiss-cut vinyl sticker sheet of your favorite Idolo expressions.",
+    "price": 6,
+    "currency": "USD",
+    "category": "Stickers",
+    "image": "/images/image.png",
+    "status": "trending",
+    "stock": 160,
+    "options": {},
+    "tags": ["stickers", "vinyl", "sheet"]
+  },
+  {
+    "id": "signature-tote-bag",
+    "title": "Signature Tote Bag",
+    "description": "Eco-friendly cotton tote with the minimal Idolo monogram. Lightweight and durable.",
+    "price": 14,
+    "currency": "USD",
+    "category": "Accessories",
+    "image": "/images/image.png",
+    "status": "new",
+    "stock": 90,
+    "options": {
+      "colors": [
+        { "name": "Natural", "image": "/images/colors/natural.png" },
+        { "name": "Black", "image": "/images/colors/black.png" }
+      ]
+    },
+    "tags": ["tote", "bag", "eco"]
+  },
+  {
+    "id": "fan-badge-set",
+    "title": "Fan Badge Set",
+    "description": "3 collectible fan badges to pin on jackets, bags, or lanyards.",
+    "price": 5,
+    "currency": "USD",
+    "category": "Accessories",
+    "image": "/images/image.png",
+    "status": "exclusive",
+    "stock": 40,
+    "options": {},
+    "tags": ["badges", "pins", "fan"]
+  },
+  {
+    "id": "idolo-zip-hoodie",
+    "title": "Idolo Zip Hoodie",
+    "description": "Premium heavyweight zip hoodie with side pockets and ribbed cuffs.",
+    "price": 50,
+    "currency": "USD",
+    "category": "Clothing",
+    "image": "/images/image.png",
+    "status": "premium",
+    "stock": 58,
+    "options": {
+      "sizes": ["S", "M", "L", "XL"],
+      "colors": [
+        { "name": "Charcoal", "image": "/images/colors/charcoal.png" },
+        { "name": "Black", "image": "/images/colors/black.png" }
+      ]
+    },
+    "tags": ["zip", "hoodie", "jacket"]
+  }
+]

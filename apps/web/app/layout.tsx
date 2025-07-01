@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "@repo/ui/globals.css";
 import "./page.module.css";
 import { Header } from "../components/header";
+import { Footer } from "../components/footer";
 
 export const metadata: Metadata = {
   title: "idolomerch - Shop weirdly interesting merchs by idolodev.",
@@ -25,6 +26,7 @@ export default function RootLayout({
       <body className="font-sans">
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

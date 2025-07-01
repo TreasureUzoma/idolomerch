@@ -20,7 +20,7 @@ export const Header = () => {
           <Menu size={25} />
         </button>
 
-        <Link href="#" className="font-semibold text-primary">
+        <Link href="/" className="font-semibold text-primary">
           idolomerch
         </Link>
 
