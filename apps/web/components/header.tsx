@@ -9,6 +9,7 @@ export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const navLinks = [
     { label: "Home", href: "/" },
+    { label: "Cart", href: "/cart" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Refunds Policy", href: "/refunds-policy" },
     { label: "Contact", href: "/contact" },
@@ -25,12 +26,12 @@ export const Header = () => {
           idolomerch
         </Link>
 
-        <div className="relative inline-block">
+        <Link href="/cart" className="relative inline-block">
           <ShoppingBag size={25} className="text-gray-700" />
           <span className="absolute -top-1 -right-1 bg-primary text-white text-[0.625rem] font-bold rounded-full w-4 h-4 flex items-center justify-center">
             2
           </span>
-        </div>
+        </Link>
       </div>
 
       <div

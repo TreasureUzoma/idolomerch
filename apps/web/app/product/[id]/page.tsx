@@ -39,7 +39,7 @@ export default function Page({ params }: Props) {
   }
 
   return (
-    <div className="py-7 px-4 md:px-[5rem] mb-7">
+    <div className="py-7 px-4 md:px-[5rem] mb-7 min-h-screen">
       <h2 className="text-xl font-bold mb-6">{product.title}</h2>
       <p className="text-gray-700">{product.description}</p>
       <div className="mt-4 max-w-md w-full rounded-2xl overflow-hidden">
@@ -51,6 +51,9 @@ export default function Page({ params }: Props) {
           className="rounded-2xl object-cover w-full h-auto"
         />
       </div>
+      <button className="block w-full py-3 rounded-md mb-auto">
+        Add to cart
+      </button>
     </div>
   );
 }

@@ -3,7 +3,6 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
@@ -33,7 +32,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </Link>
 
-      <div className="p-3 flex flex-col justify-between h-[115px]">
+      <div className="p-3 flex flex-col h-[110px]">
         <div className="flex items-start justify-between gap-2">
           <Link href={`/product/${id}`}>
             <h3 className="text-sm font-semibold line-clamp-2 leading-snug">
@@ -45,10 +44,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="text-primary bg-primary bg-opacity-10 rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-primary hover:text-white transition"
             aria-label="Add to Cart"
           >
-            <Plus />
+            +
           </button>
         </div>
-
         <p className="text-sm font-medium text-gray-900">
           USD {price.toFixed(2)}
         </p>
