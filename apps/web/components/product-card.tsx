@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Plus } from "lucide-react";
 
 interface ProductCardProps {
   id: string;
@@ -20,9 +21,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   onAddToCart,
 }) => {
   return (
-    <div className="h-[370px] rounded-xl overflow-hidden hover:shadow-sm transition-all duration-200">
+    <div>
       <Link href={`/product/${id}`}>
-        <div className="relative w-full h-[245px]">
+        <div className="relative w-full h-[180px] rounded-xl overflow-hidden">
           <Image
             src={image}
             alt={title}
@@ -32,20 +33,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
       </Link>
 
-      <div className="p-4 flex flex-col justify-between h-[130px]">
-        <Link href={`/product/${id}`}>
-          <h3 className="text-base font-semibold line-clamp-1">{title}</h3>
-        </Link>
-        <p className="text-sm font-medium text-gray-600 mt-1">
-          ${price.toFixed(2)}
-        </p>
+      <div className="p-3 flex flex-col justify-between h-[115px]">
+        <div className="flex items-start justify-between gap-2">
+          <Link href={`/product/${id}`}>
+            <h3 className="text-sm font-semibold line-clamp-2 leading-snug">
+              {title}
+            </h3>
+          </Link>
+          <button
+            onClick={onAddToCart}
+            className="text-primary bg-primary bg-opacity-10 rounded-full w-6 h-6 flex items-center justify-center text-xs hover:bg-primary hover:text-white transition"
+            aria-label="Add to Cart"
+          >
+            <Plus />
+          </button>
+        </div>
 
-        <button
-          onClick={onAddToCart}
-          className="mt-3 bg-primary text-white rounded-lg py-2 px-4 text-sm font-medium hover:bg-opacity-90 transition"
-        >
-          Add to Cart
-        </button>
+        <p className="text-sm font-medium text-gray-900">
+          USD {price.toFixed(2)}
+        </p>
       </div>
     </div>
   );

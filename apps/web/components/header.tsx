@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
+import { CurrencyDropdown } from "./currency-dropdown";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -62,6 +63,7 @@ export const Header = () => {
               {label}
             </Link>
           ))}
+          <CurrencyDropdown />
         </nav>
       </div>
     </header>
