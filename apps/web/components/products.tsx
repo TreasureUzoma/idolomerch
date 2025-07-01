@@ -9,7 +9,7 @@ export default function Products() {
     <div className="py-7 px-4 md:px-[5rem] mb-7">
       <h2 className="text-xl font-bold mb-6">All Products</h2>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-4 gap-x-5 md:gap-x-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 md:gap-y-4 gap-x-5 md:gap-x-6">
         {productData.map((product) => (
           <ProductCard
             key={product.id}
