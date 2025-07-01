@@ -42,13 +42,13 @@ export default function Page({ params }: Props) {
     <div className="py-7 px-4 md:px-[5rem] mb-7">
       <h2 className="text-xl font-bold mb-6">{product.title}</h2>
       <p className="text-gray-700">{product.description}</p>
-      <div className="mt-4 max-w-md w-full rounded overflow-hidden">
+      <div className="mt-4 max-w-md w-full rounded-2xl overflow-hidden">
         <Image
           src={product.image}
           alt={product.title}
           width={500}
           height={500}
-          className="rounded object-cover w-full h-auto"
+          className="rounded-2xl object-cover w-full h-auto"
         />
       </div>
     </div>

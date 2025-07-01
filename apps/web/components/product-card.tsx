@@ -23,7 +23,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   return (
     <div>
       <Link href={`/product/${id}`}>
-        <div className="relative w-full h-[180px] rounded-xl overflow-hidden">
+        <div className="relative w-full h-[180px] rounded-2xl overflow-hidden">
           <Image
             src={image}
             alt={title}
