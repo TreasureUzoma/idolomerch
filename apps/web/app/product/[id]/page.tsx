@@ -1,12 +1,16 @@
-import Image from "next/image";
-import productData from "../../../data/dummy-products.json";
+import productData from "@/data/dummy-products.json";
 import type { Metadata } from "next";
+import { ProductHeader } from "@/components/product-header";
+import { ProductDetails } from "@/components/product-details";
+import { Product } from "@/types/product";
+import { SimilarProducts } from "@/components/similar-products";
 
 type Props = {
   params: { id: string };
 };
 
-const getProductById = (id: string) => productData.find((p) => p.id === id);
+const getProductById = (id: string): Product | undefined =>
+  productData.find((p) => p.id === id);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = getProductById(params.id);
@@ -39,21 +43,10 @@ export default function Page({ params }: Props) {
   }
 
   return (
-    <div className="py-7 px-4 md:px-[5rem] mb-7 min-h-screen">
-      <h2 className="text-xl font-bold mb-6">{product.title}</h2>
-      <p className="text-gray-700">{product.description}</p>
-      <div className="mt-4 max-w-md w-full rounded-2xl overflow-hidden">
-        <Image
-          src={product.image}
-          alt={product.title}
-          width={500}
-          height={500}
-          className="rounded-2xl object-cover w-full h-auto"
-        />
-      </div>
-      <button className="block w-full py-3 rounded-md mb-auto bg-primary text-white hover:bg-opacity-90 sticky bottom-3">
-        Add to cart
-      </button>
+    <div>
+      <ProductHeader title={product.title} />
+      <ProductDetails product={product} />
+      <SimilarProducts currentProduct={product} allProducts={productData} />
     </div>
   );
 }

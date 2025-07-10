@@ -12,12 +12,17 @@
     "options": {
       "sizes": ["S", "M", "L", "XL"],
       "colors": [
-        { "name": "Black", "image": "/images/colors/black.png" },
-        { "name": "White", "image": "/images/colors/white.png" },
-        { "name": "Gray", "image": "/images/colors/gray.png" }
+        { "name": "Black", "image": "/images/image.png" },
+        { "name": "White", "image": "/images/image.png" },
+        { "name": "Gray", "image": "/images/image.png" }
       ]
     },
-    "tags": ["t-shirt", "cotton", "logo"]
+    "tags": ["t-shirt", "cotton", "logo"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "idolo-logo-cap",
@@ -31,11 +36,16 @@
     "stock": 80,
     "options": {
       "colors": [
-        { "name": "Black", "image": "/images/colors/black.png" },
-        { "name": "Navy", "image": "/images/colors/navy.png" }
+        { "name": "Black", "image": "/images/image.png" },
+        { "name": "Navy", "image": "/images/image.png" }
       ]
     },
-    "tags": ["cap", "hat", "accessory"]
+    "tags": ["cap", "hat", "accessory"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "holographic-sticker-pack",
@@ -48,7 +58,12 @@
     "status": "new",
     "stock": 200,
     "options": {},
-    "tags": ["stickers", "holographic", "pack"]
+    "tags": ["stickers", "holographic", "pack"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "idolo-hoodie",
@@ -63,11 +78,16 @@
     "options": {
       "sizes": ["S", "M", "L", "XL"],
       "colors": [
-        { "name": "Black", "image": "/images/colors/black.png" },
-        { "name": "Heather Gray", "image": "/images/colors/heather-gray.png" }
+        { "name": "Black", "image": "/images/image.png" },
+        { "name": "Heather Gray", "image": "/images/image.png" }
       ]
     },
-    "tags": ["hoodie", "fleece", "sweater"]
+    "tags": ["hoodie", "fleece", "sweater"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "limited-edition-poster",
@@ -80,7 +100,12 @@
     "status": "limited",
     "stock": 25,
     "options": {},
-    "tags": ["poster", "art", "limited"]
+    "tags": ["poster", "art", "limited"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "idolo-beanie",
@@ -94,11 +119,16 @@
     "stock": 100,
     "options": {
       "colors": [
-        { "name": "Black", "image": "/images/colors/black.png" },
-        { "name": "Gray", "image": "/images/colors/gray.png" }
+        { "name": "Black", "image": "/images/image.png" },
+        { "name": "Gray", "image": "/images/image.png" }
       ]
     },
-    "tags": ["beanie", "hat", "knit"]
+    "tags": ["beanie", "hat", "knit"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "vinyl-sticker-sheet",
@@ -111,7 +141,12 @@
     "status": "trending",
     "stock": 160,
     "options": {},
-    "tags": ["stickers", "vinyl", "sheet"]
+    "tags": ["stickers", "vinyl", "sheet"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "signature-tote-bag",
@@ -125,11 +160,16 @@
     "stock": 90,
     "options": {
       "colors": [
-        { "name": "Natural", "image": "/images/colors/natural.png" },
-        { "name": "Black", "image": "/images/colors/black.png" }
+        { "name": "Natural", "image": "/images/image.png" },
+        { "name": "Black", "image": "/images/image.png" }
       ]
     },
-    "tags": ["tote", "bag", "eco"]
+    "tags": ["tote", "bag", "eco"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "fan-badge-set",
@@ -142,7 +182,12 @@
     "status": "exclusive",
     "stock": 40,
     "options": {},
-    "tags": ["badges", "pins", "fan"]
+    "tags": ["badges", "pins", "fan"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   },
   {
     "id": "idolo-zip-hoodie",
@@ -157,10 +202,15 @@
     "options": {
       "sizes": ["S", "M", "L", "XL"],
       "colors": [
-        { "name": "Charcoal", "image": "/images/colors/charcoal.png" },
-        { "name": "Black", "image": "/images/colors/black.png" }
+        { "name": "Charcoal", "image": "/images/image.png" },
+        { "name": "Black", "image": "/images/image.png" }
       ]
     },
-    "tags": ["zip", "hoodie", "jacket"]
+    "tags": ["zip", "hoodie", "jacket"],
+    "moreDetails": [
+      "Machine washable",
+      "Fabric: Cotton Surface",
+      "Do not bleach"
+    ]
   }
 ]
