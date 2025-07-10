@@ -2,7 +2,7 @@ import productData from "@/data/dummy-products.json";
 import type { Metadata } from "next";
 import { ProductHeader } from "@/components/product-header";
 import { ProductDetails } from "@/components/product-details";
-import { Product } from "@/types/product";
+import { Product } from "@repo/ui/types/product";
 import { SimilarProducts } from "@/components/similar-products";
 
 type Props = {
