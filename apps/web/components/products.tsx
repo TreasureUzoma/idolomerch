@@ -17,7 +17,6 @@ export default function Products() {
             title={product.title}
             price={product.price}
             image={product.image}
-            onAddToCart={() => console.log(`Add ${product.id} to cart`)}
           />
         ))}
       </div>
