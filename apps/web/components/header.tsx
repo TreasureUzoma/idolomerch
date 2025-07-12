@@ -4,9 +4,11 @@ import React, { useState } from "react";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
-
+import { useCart } from "@/context/cart";
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { cart } = useCart();
+
   const navLinks = [
     { label: "Home", href: "/" },
     { label: "Cart", href: "/cart" },
@@ -14,6 +16,8 @@ export const Header = () => {
     { label: "Refunds Policy", href: "/refunds-policy" },
     { label: "Contact", href: "/contact" },
   ];
+
+  const cartCount = cart.reduce((total, item) => total + item.quantity, 0);
 
   return (
     <header className="py-4 sticky top-0 left-0 right-0 shadow-sm bg-white z-50">
@@ -28,9 +32,11 @@ export const Header = () => {
 
         <Link href="/cart" className="relative inline-block">
           <ShoppingBag size={25} className="text-gray-700" />
-          <span className="absolute -top-1 -right-1 bg-primary text-white text-[0.625rem] font-bold rounded-full w-4 h-4 flex items-center justify-center">
-            2
-          </span>
+          {cartCount > 0 && (
+            <span className="absolute -top-1 -right-1 bg-primary text-white text-[0.625rem] font-bold rounded-full w-4 h-4 flex items-center justify-center">
+              {cartCount}
+            </span>
+          )}
         </Link>
       </div>
 

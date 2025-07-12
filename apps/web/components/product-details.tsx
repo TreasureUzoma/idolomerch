@@ -3,15 +3,32 @@
 import Image from "next/image";
 import { useState } from "react";
 import { Product } from "@repo/ui/types/product";
+import { useCart } from "@/context/cart";
+import { Check } from "lucide-react";
 
 export const ProductDetails = ({ product }: { product: Product }) => {
+  const { addToCart } = useCart();
   const [selectedColor, setSelectedColor] = useState(
     product.options.colors?.[0] ?? null
   );
   const [selectedSize, setSelectedSize] = useState<string | null>("M");
   const [quantity, setQuantity] = useState("1");
+  const [added, setAdded] = useState(false);
 
   const displayedImage = selectedColor?.image ?? product.image;
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: product.id + (selectedColor?.name || "") + (selectedSize || ""),
+      name: product.title,
+      price: product.price,
+      quantity: parseInt(quantity),
+      image: displayedImage,
+    });
+
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
 
   return (
     <div className="py-3 px-4 md:px-[5rem] min-h-screen">
@@ -127,8 +144,18 @@ export const ProductDetails = ({ product }: { product: Product }) => {
           )}
 
           {/* Add to Cart Button */}
-          <button className="w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-opacity-90 transition">
-            Add to cart
+          <button
+            onClick={handleAddToCart}
+            className="w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-opacity-90 transition flex items-center justify-center gap-2"
+          >
+            {added ? (
+              <>
+                <Check className="w-4 h-4" />
+                Added to Cart
+              </>
+            ) : (
+              <>Add to Cart</>
+            )}
           </button>
         </div>
       </div>

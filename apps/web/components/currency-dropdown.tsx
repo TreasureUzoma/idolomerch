@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { ChevronDown } from "lucide-react";
+import { useCurrency } from "@/context/currency";
 
 interface Props {
   currencies?: string[];
-  defaultCurrency?: string;
 }
 
 const FLAGS: Record<string, string> = {
@@ -18,9 +18,8 @@ const FLAGS: Record<string, string> = {
 
 export const CurrencyDropdown: React.FC<Props> = ({
   currencies = ["USD", "EUR", "NGN", "GBP", "CAD"],
-  defaultCurrency = "USD",
 }) => {
-  const [currency, setCurrency] = useState(defaultCurrency);
+  const { currency, setCurrency } = useCurrency();
   const [open, setOpen] = useState(false);
   const [position, setPosition] = useState<"bottom" | "top">("bottom");
   const [align, setAlign] = useState<"left" | "right">("left");
@@ -28,15 +27,7 @@ export const CurrencyDropdown: React.FC<Props> = ({
   const dropdownRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Load saved currency on mount
-  useEffect(() => {
-    const saved = localStorage.getItem("currency");
-    if (saved && currencies.includes(saved)) {
-      setCurrency(saved);
-    }
-  }, [currencies]);
-
-  // Handle dropdown position + outside click
+  // Positioning + outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -71,12 +62,6 @@ export const CurrencyDropdown: React.FC<Props> = ({
     };
   }, [open]);
 
-  const handleSelect = (cur: string) => {
-    setCurrency(cur);
-    localStorage.setItem("currency", cur);
-    setOpen(false);
-  };
-
   return (
     <div className="relative inline-block">
       <button
@@ -99,7 +84,10 @@ export const CurrencyDropdown: React.FC<Props> = ({
           {currencies.map((cur) => (
             <button
               key={cur}
-              onClick={() => handleSelect(cur)}
+              onClick={() => {
+                setCurrency(cur);
+                setOpen(false);
+              }}
               className={`w-full text-left px-3 py-2 hover:bg-gray-100 flex items-center gap-2 ${
                 cur === currency ? "text-primary font-semibold" : ""
               }`}

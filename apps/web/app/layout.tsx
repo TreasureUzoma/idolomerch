@@ -1,3 +1,5 @@
+import { CurrencyProvider } from "@/context/currency";
+import { CartProvider } from "@/context/cart";
 import type { Metadata } from "next";
 import "@repo/ui/globals.css";
 import "./page.module.css";
@@ -24,10 +26,15 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans">
-        <Header />
-        {children}
-        <Footer />
+        <CurrencyProvider>
+          <CartProvider>
+            <Header />
+            {children}
+            <Footer />
+          </CartProvider>
+        </CurrencyProvider>
       </body>
     </html>
   );
 }
+

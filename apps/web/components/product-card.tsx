@@ -1,16 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Plus, Check } from "lucide-react";
+import { useCart } from "@/context/cart";
+import { useCurrency } from "@/context/currency";
+import { convertCurrency } from "@repo/ui/lib/currency";
 
 interface ProductCardProps {
   id: string;
   title: string;
-  price: number;
+  price: number; // Base price in USD
   image: string;
-  onAddToCart?: () => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -18,12 +20,41 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   title,
   price,
   image,
-  onAddToCart,
 }) => {
   const [added, setAdded] = useState(false);
+  const { addToCart } = useCart();
+  const { currency } = useCurrency();
+
+  const [convertedPrice, setConvertedPrice] = useState<number | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchConverted = async () => {
+      try {
+        const result = await convertCurrency(price, currency, "USD");
+        if (!cancelled) setConvertedPrice(result);
+      } catch (err) {
+        console.error("Currency conversion error:", err);
+      }
+    };
+
+    fetchConverted();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [price, currency]);
 
   const handleAdd = () => {
-    if (onAddToCart) onAddToCart();
+    addToCart({
+      id,
+      name: title,
+      price, // stored as USD; adjust if cart display needs conversion
+      quantity: 1,
+      image,
+    });
+
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
   };
@@ -63,7 +94,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <p className="text-sm font-medium text-gray-900">
-          USD {price.toFixed(2)}
+          {convertedPrice !== null
+            ? `${currency} ${convertedPrice.toFixed(2)}`
+            : `USD ${price.toFixed(2)}`}
         </p>
 
         <button
