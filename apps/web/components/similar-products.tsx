@@ -7,11 +7,13 @@ import { ProductCard } from "./product-card";
 type SimilarProductsProps = {
   currentProduct: Product;
   allProducts: Product[];
+  exchangeRate: number | null; // ✅ Add this prop
 };
 
 export const SimilarProducts = ({
   currentProduct,
   allProducts,
+  exchangeRate,
 }: SimilarProductsProps) => {
   const related = allProducts.filter(
     (p) =>
@@ -41,6 +43,7 @@ export const SimilarProducts = ({
             title={item.title}
             price={item.price}
             image={item.image}
+            exchangeRate={exchangeRate}
           />
         ))}
       </div>

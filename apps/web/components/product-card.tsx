@@ -2,11 +2,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Plus, Check } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
-import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
 
 interface ProductCardProps {
@@ -14,6 +13,7 @@ interface ProductCardProps {
   title: string;
   price: number; // Base price in USD
   image: string;
+  exchangeRate: number | null;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -21,42 +21,19 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   title,
   price,
   image,
+  exchangeRate,
 }) => {
   const { addToCart } = useCart();
   const { currency } = useCurrency();
-
-  const [convertedPrice, setConvertedPrice] = useState<number | null>(null);
-  const [loading, setLoading] = useState(true);
   const [added, setAdded] = useState(false);
 
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-
-    const fetchConverted = async () => {
-      try {
-        const result = await convertCurrency(price, currency, "USD");
-        if (!cancelled) {
-          setConvertedPrice(result);
-          setLoading(false);
-        }
-      } catch (err) {
-        console.error("Currency conversion error:", err);
-        setLoading(false);
-      }
-    };
-
-    fetchConverted();
-    return () => {
-      cancelled = true;
-    };
-  }, [price, currency]);
+  const convertedPrice = exchangeRate !== null ? price * exchangeRate : price;
 
   const handleAdd = () => {
     addToCart({
       id,
       name: title,
-      price: convertedPrice ?? price, // Optional: store converted price
+      price, // still store USD
       quantity: 1,
       image: image || "/images/default.png",
     });
@@ -95,13 +72,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </button>
         </div>
 
-        {loading ? (
-          <div className="w-16 h-4 bg-primary opacity-10 animate-pulse rounded" />
-        ) : (
-          <p className="text-sm font-medium text-gray-900">
-            {formatCurrency(convertedPrice ?? price, currency)}
-          </p>
-        )}
+        <p className="text-sm font-medium text-gray-900">
+          {formatCurrency(convertedPrice, currency)}
+        </p>
 
         <button
           onClick={handleAdd}
