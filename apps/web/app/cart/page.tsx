@@ -14,6 +14,8 @@ export default function CartPage() {
   const { currency } = useCurrency();
 
   const [convertedTotal, setConvertedTotal] = useState<number | null>(null);
+  const [conversionRate, setConversionRate] = useState<number>(1);
+  const [monnifyReady, setMonnifyReady] = useState(false);
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
@@ -21,7 +23,10 @@ export default function CartPage() {
   );
 
   useEffect(() => {
-    convertCurrency(totalAmount, currency).then(setConvertedTotal);
+    convertCurrency(1, currency).then((rate) => {
+      setConversionRate(rate);
+      setConvertedTotal(rate * totalAmount);
+    });
   }, [cart, currency]);
 
   const handleRemove = (id: string, name: string) => {
@@ -34,9 +39,20 @@ export default function CartPage() {
       return;
     }
 
+    if (!monnifyReady) {
+      alert("Monnify is still loading. Please wait...");
+      return;
+    }
+
+    // @ts-ignore
+    if (typeof window === "undefined" || !window.MonnifySDK) {
+      console.error("Monnify SDK not available");
+      return;
+    }
+
     const reference = `TX-${Date.now()}`;
 
-    // @ts-ignore - Monnify is a global SDK
+    // @ts-ignore
     window.MonnifySDK.initialize({
       amount: convertedTotal || totalAmount,
       currency: "NGN",
@@ -64,11 +80,18 @@ export default function CartPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen pb-28 md:pb-6">
+    <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen">
       {/* Load Monnify SDK */}
       <Script
         src="https://sdk.monnify.com/plugin/monnify.js"
         strategy="afterInteractive"
+        onLoad={() => {
+          // @ts-ignore
+          if (window.MonnifySDK) {
+            setMonnifyReady(true);
+            console.log("Monnify SDK loaded and ready.");
+          }
+        }}
       />
 
       <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
@@ -95,7 +118,7 @@ export default function CartPage() {
                 <div className="flex-1 space-y-1">
                   <h2 className="text-lg font-medium">{item.name}</h2>
                   <p className="text-sm text-muted-foreground">
-                    {formatCurrency(item.price, currency)}
+                    {formatCurrency(item.price * conversionRate, currency)}
                   </p>
 
                   <div className="flex items-center gap-2 mt-1">
@@ -134,8 +157,8 @@ export default function CartPage() {
             ))}
           </div>
 
-          
-          <div className="fixed bottom-0 left-0 w-full md:static bg-white border-t md:border-none px-4 py-4 z-50">
+          {/* Not fixed so it won't block footer */}
+          <div className="mt-6 px-4 py-4 bg-white border-t md:border-none md:sticky md:bottom-0 md:shadow md:rounded-md">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
               <p className="text-base font-semibold text-gray-900">
                 Total:{" "}
@@ -146,7 +169,8 @@ export default function CartPage() {
 
               <button
                 onClick={payWithMonnify}
-                className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition"
+                disabled={!monnifyReady}
+                className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 Checkout
               </button>
