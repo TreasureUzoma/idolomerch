@@ -35,6 +35,8 @@ export default function CartPage() {
     return;
   }
 
+  /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+  // @ts-expect-error - Ignore missing MonnifySDK type
   if (typeof window === "undefined" || !window.MonnifySDK) {
     console.error("Monnify SDK not available");
     return;
@@ -71,7 +73,7 @@ export default function CartPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen">
-      {/* ✅ Load Monnify SDK */}
+      {/* Load Monnify SDK */}
       <Script
         src="https://sdk.monnify.com/plugin/monnify.js"
         strategy="afterInteractive"
