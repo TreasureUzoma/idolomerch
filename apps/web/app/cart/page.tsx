@@ -10,7 +10,7 @@ import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart updateQuantity } = useCart();
+  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
   const { currency } = useCurrency();
 
   const [convertedTotal, setConvertedTotal] = useState<number | null>(null);
