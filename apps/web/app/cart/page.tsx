@@ -26,54 +26,45 @@ export default function CartPage() {
 
   const handleRemove = (id: string, name: string) => {
     removeFromCart(id);
-    // toast.success(`${name} removed from cart`);
   };
 
   const payWithMonnify = () => {
-  if (currency !== "NGN") {
-    alert("Sorry, payment is only available in NGN at the moment.");
-    return;
-  }
+    if (currency !== "NGN") {
+      alert("Sorry, payment is only available in NGN at the moment.");
+      return;
+    }
 
-  /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-  // @ts-expect-error - Ignore missing MonnifySDK type
-  if (typeof window === "undefined" || !window.MonnifySDK) {
-    console.error("Monnify SDK not available");
-    return;
-  }
+    const reference = `TX-${Date.now()}`;
 
-  const reference = `TX-${Date.now()}`;
- /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
-// @ts-ignore 
-  window.MonnifySDK.initialize({
-    amount: convertedTotal || totalAmount,
-    currency: "NGN", // Force to NGN just in case
-    reference,
-    customerFullName: "Test User",
-    customerEmail: "test@example.com",
-    apiKey: process.env.NEXT_PUBLIC_MONNIFY_API_KEY!,
-    contractCode: process.env.NEXT_PUBLIC_MONNIFY_CONTRACT_CODE!,
-    paymentDescription: "Your Purchase on Idolomerch",
-    metadata: {
-      cart: cart.map((item) => item.name).join(", "),
-    },
-    onLoadStart: () => console.log("Payment loading..."),
-    onLoadComplete: () => console.log("Monnify SDK Loaded"),
-    onComplete: (response: any) => {
-      if (response.status === "PAID") {
-        alert("Payment successful!");
-        clearCart();
-      }
-    },
-    onClose: () => {
-      console.log("Payment window closed");
-    },
-  });
-};
-
+    // @ts-ignore - Monnify is a global SDK
+    window.MonnifySDK.initialize({
+      amount: convertedTotal || totalAmount,
+      currency: "NGN",
+      reference,
+      customerFullName: "Test User",
+      customerEmail: "test@example.com",
+      apiKey: process.env.NEXT_PUBLIC_MONNIFY_API_KEY!,
+      contractCode: process.env.NEXT_PUBLIC_MONNIFY_CONTRACT_CODE!,
+      paymentDescription: "Your Purchase on Idolomerch",
+      metadata: {
+        cart: cart.map((item) => item.name).join(", "),
+      },
+      onLoadStart: () => console.log("Payment loading..."),
+      onLoadComplete: () => console.log("Monnify SDK Loaded"),
+      onComplete: (response: any) => {
+        if (response.status === "PAID") {
+          alert("Payment successful!");
+          clearCart();
+        }
+      },
+      onClose: () => {
+        console.log("Payment window closed");
+      },
+    });
+  };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen">
+    <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen pb-28 md:pb-6">
       {/* Load Monnify SDK */}
       <Script
         src="https://sdk.monnify.com/plugin/monnify.js"
@@ -143,6 +134,7 @@ export default function CartPage() {
             ))}
           </div>
 
+          
           <div className="fixed bottom-0 left-0 w-full md:static bg-white border-t md:border-none px-4 py-4 z-50">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
               <p className="text-base font-semibold text-gray-900">
