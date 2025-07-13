@@ -43,7 +43,9 @@ export default function CartPage() {
   }
 
   const reference = `TX-${Date.now()}`;
-
+ /* eslint-disable-next-line @typescript-eslint/ban-ts-comment */
+// @ts-ignore
+window.MonnifySDK.initialize({
   window.MonnifySDK.initialize({
     amount: convertedTotal || totalAmount,
     currency: "NGN", // Force to NGN just in case
