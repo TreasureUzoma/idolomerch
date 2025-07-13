@@ -7,6 +7,8 @@ import { Plus, Check } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
+import { formatCurrency } from "@repo/ui/lib/format-currency";
+
 
 interface ProductCardProps {
   id: string;
@@ -94,9 +96,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <p className="text-sm font-medium text-gray-900">
-          {convertedPrice !== null
-            ? `${currency} ${convertedPrice.toFixed(2)}`
-            : `USD ${price.toFixed(2)}`}
+          {convertedTotal !== null
+                ? `${formatCurrency(item.price, currency)}`
+                : `${formatCurrency(totalAmount, currency)}`}
         </p>
 
         <button

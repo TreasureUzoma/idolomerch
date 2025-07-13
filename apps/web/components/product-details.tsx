@@ -144,19 +144,22 @@ export const ProductDetails = ({ product }: { product: Product }) => {
           )}
 
           {/* Add to Cart Button */}
-          <button
+          <div className="md:static fixed bottom-0 left-0 w-full bg-white md:bg-transparent px-4 py-3 border-t md:border-none z-50">
+            <button
             onClick={handleAddToCart}
             className="w-full py-3 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-opacity-90 transition flex items-center justify-center gap-2"
-          >
-            {added ? (
-              <>
-                <Check className="w-4 h-4" />
-                Added to Cart
-              </>
-            ) : (
+            >
+              {added ? (
+               <>
+               <Check className="w-4 h-4" />
+               Added to Cart
+               </>
+               ) : (
               <>Add to Cart</>
-            )}
-          </button>
+       )}
+       </button>
+         </div>
+
         </div>
       </div>
     </div>

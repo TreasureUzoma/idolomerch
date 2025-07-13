@@ -1,8 +1,8 @@
-# IdoloMerch: A Dynamic E-commerce Web Experience 🛍️
+# idolomerch
 
-IdoloMerch is a sleek, modern e-commerce web application designed to offer a seamless shopping experience for unique and "weirdly interesting" merchandise. Built with a focus on performance and user experience, it features dynamic product listings, intuitive cart management, and real-time currency conversion, ensuring a truly global shopping journey.
+idolomerch is a sleek, modern e-commerce web application designed to offer a seamless shopping experience for unique and "weirdly interesting" merchandise. Built with a focus on performance and user experience, it features dynamic product listings, intuitive cart management, and real-time currency conversion, ensuring a truly global shopping journey.
 
-## ✨ Key Features
+## Key Features
 
 *   **Dynamic Product Catalog**: Browse a diverse range of products with detailed descriptions, images, and customizable options (colors, sizes).
 *   **Intuitive Shopping Cart**: Easily add, update quantities, and remove items from your cart. Your cart persists across sessions thanks to local storage integration.
@@ -11,19 +11,18 @@ IdoloMerch is a sleek, modern e-commerce web application designed to offer a sea
 *   **Product Breadcrumbs**: Navigate effortlessly through product categories with clear breadcrumb trails.
 *   **Monorepo Structure**: Organized within a Turborepo monorepo, promoting code reusability and efficient development across different packages.
 
-## 🚀 Usage
+## Usage
 
 To get IdoloMerch up and running on your local machine, follow these steps:
 
 1.  **Clone the Repository**:
     ```bash
-    git clone [your-repository-url]
+    git clone https://github.com/treasureuzoma/idolomerch.git
     cd idolomerch/apps/web
     ```
-    *(Note: The provided file paths suggest this `web` app is part of a larger `idolomerch` monorepo. Ensure you are in the `apps/web` directory or the correct app directory after cloning the root monorepo.)*
 
 2.  **Install Dependencies**:
-    Navigate into the `web` directory (or the relevant application directory if part of a monorepo) and install the required packages:
+    Navigate into the `root` directory and install the required packages:
     ```bash
     npm install
     # or
@@ -33,7 +32,7 @@ To get IdoloMerch up and running on your local machine, follow these steps:
     ```
 
 3.  **Environment Configuration**:
-    Create a `.env.local` file in the `apps/web` directory (if it doesn't already exist) and populate it with your API keys. You can use the provided `.env.example` as a template.
+    Create a `.env.local` file in the `apps/web` directory and populate it with your API keys. You can use the provided `.env.example` as a template.
     ```
     NEXT_PUBLIC_BASE_URL=https://api.example.com/api/v1/
     CURRENCY_CONVERTER_API=fca_live_YOUR_FREE_CURRENCY_API_KEY
@@ -76,13 +75,8 @@ This project leverages a robust and modern stack to deliver a high-quality user 
 | **PostCSS**     | A tool for transforming CSS with JavaScript plugins.                        | [postcss.org](https://postcss.org/)                                   |
 | **Turborepo**   | High-performance build system for JavaScript and TypeScript monorepos.      | [turbo.build](https://turbo.build/)                                     |
 
-## 📄 License
 
-This project is currently unlicensed. Please refer to the source code for any specific usage rights or contact the author for licensing inquiries.
-
-© {new Date().getFullYear()} idolomerch
-
-## ✍️ Author
+## Chef
 
 This project was developed by a passionate technologist committed to creating impactful and engaging web solutions.
 
