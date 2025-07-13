@@ -157,8 +157,7 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Not fixed so it won't block footer */}
-          <div className="mt-6 px-4 py-4 bg-white border-t md:border-none md:sticky md:bottom-0 md:shadow md:rounded-md">
+          <div className="fixed bottom-0 left-0 w-full md:static bg-white border-t md:border-none px-4 py-4 z-50">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
               <p className="text-base font-semibold text-gray-900">
                 Total:{" "}
@@ -169,8 +168,7 @@ export default function CartPage() {
 
               <button
                 onClick={payWithMonnify}
-                disabled={!monnifyReady}
-                className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition"
               >
                 Checkout
               </button>
