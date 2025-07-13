@@ -96,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {loading ? (
-          <div className="w-16 h-4 bg-primary opacity-30 animate-pulse rounded" />
+          <div className="w-16 h-4 bg-primary opacity-10 animate-pulse rounded" />
         ) : (
           <p className="text-sm font-medium text-gray-900">
             {formatCurrency(convertedPrice ?? price, currency)}
