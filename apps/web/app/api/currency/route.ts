@@ -1,9 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
+type ExchangeApiResponse = {
+  result: string;
+  "error-type"?: string;
+  conversion_rate: number;
+  time_last_update_utc: string;
+};
+
+type ExchangeSuccessResponse = {
+  data: Record<string, number>;
+  meta: {
+    source: string;
+    last_updated_at: string;
+  };
+};
+
+type ExchangeErrorResponse = {
+  error: string;
+  details?: string;
+};
+
+export async function GET(req: NextRequest): Promise<NextResponse<ExchangeSuccessResponse | ExchangeErrorResponse>> {
   const { searchParams } = req.nextUrl;
   const base = searchParams.get("base") ?? "USD";
   const symbol = searchParams.get("symbol");
+
+  if (!symbol) {
+    return NextResponse.json(
+      { error: "Missing 'symbol' query parameter" },
+      { status: 400 }
+    );
+  }
 
   const apiKey = process.env.CURRENCY_CONVERTER_API;
 
@@ -18,7 +45,7 @@ export async function GET(req: NextRequest) {
 
   try {
     const response = await fetch(url);
-    const result = await response.json();
+    const result = (await response.json()) as ExchangeApiResponse;
 
     if (result.result !== "success") {
       throw new Error(result["error-type"] || "Unknown error from exchange API");
