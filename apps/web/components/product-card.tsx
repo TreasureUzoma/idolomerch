@@ -1,14 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import { Plus, Check } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
-
 
 interface ProductCardProps {
   id: string;
@@ -23,26 +22,31 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   price,
   image,
 }) => {
-  const [added, setAdded] = useState(false);
   const { addToCart } = useCart();
   const { currency } = useCurrency();
 
   const [convertedPrice, setConvertedPrice] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [added, setAdded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
 
     const fetchConverted = async () => {
       try {
         const result = await convertCurrency(price, currency, "USD");
-        if (!cancelled) setConvertedPrice(result);
+        if (!cancelled) {
+          setConvertedPrice(result);
+          setLoading(false);
+        }
       } catch (err) {
         console.error("Currency conversion error:", err);
+        setLoading(false);
       }
     };
 
     fetchConverted();
-
     return () => {
       cancelled = true;
     };
@@ -52,9 +56,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
     addToCart({
       id,
       name: title,
-      price, // stored as USD; adjust if cart display needs conversion
+      price: convertedPrice ?? price, // Optional: store converted price
       quantity: 1,
-      image,
+      image: image || "/images/default.png",
     });
 
     setAdded(true);
@@ -66,8 +70,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({
       <Link href={`/product/${id}`}>
         <div className="relative w-full h-[180px] rounded-2xl overflow-hidden">
           <Image
-            src={image}
-            alt={title}
+            src={image || "/images/default.png"}
+            alt={title || "Product image"}
             fill
             className="object-cover transition-transform duration-300 hover:scale-105"
           />
@@ -87,19 +91,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             className="md:hidden shrink-0 text-primary bg-primary bg-opacity-10 rounded-full w-[2.125rem] h-[2.125rem] flex items-center justify-center hover:bg-primary hover:text-white transition"
             aria-label="Add to Cart"
           >
-            {added ? (
-              <Check className="w-4 h-4" />
-            ) : (
-              <Plus className="w-4 h-4" />
-            )}
+            {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
           </button>
         </div>
 
-        <p className="text-sm font-medium text-gray-900">
-          {convertedPrice !== null
-                ? `${formatCurrency(item.price, currency)}`
-                : `${formatCurrency(totalAmount, currency)}`}
-        </p>
+        {loading ? (
+          <div className="w-16 h-4 bg-primary opacity-30 animate-pulse rounded" />
+        ) : (
+          <p className="text-sm font-medium text-gray-900">
+            {formatCurrency(convertedPrice ?? price, currency)}
+          </p>
+        )}
 
         <button
           onClick={handleAdd}
