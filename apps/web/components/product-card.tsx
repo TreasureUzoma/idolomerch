@@ -96,7 +96,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         <p className="text-sm font-medium text-gray-900">
-          {convertedTotal !== null
+          {convertedPrice !== null
                 ? `${formatCurrency(item.price, currency)}`
                 : `${formatCurrency(totalAmount, currency)}`}
         </p>
