@@ -5,6 +5,7 @@ import { Product } from "@repo/ui/types/product";
 import { ProductCard } from "./product-card";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
+import { ProductCardSkeleton } from "@repo/ui/components/product-card-skeleton";
 
 type SimilarProductsProps = {
   currentProduct: Product;
@@ -56,14 +57,6 @@ export const SimilarProducts = ({
 
   const productsToShow = related.length ? related : getRandomProducts(6);
 
-  const SkeletonCard = () => (
-    <div className="animate-pulse flex flex-col gap-3">
-      <div className="w-full h-[180px] rounded-2xl bg-primary/20" />
-      <div className="h-4 w-3/4 rounded bg-primary/20" />
-      <div className="h-6 w-1/2 rounded-xl bg-primary/20" />
-    </div>
-  );
-
   return (
     <div className="py-12 px-4 md:px-[5rem]">
       <h3 className="text-xl font-bold text-gray-900 mb-4">
@@ -72,7 +65,7 @@ export const SimilarProducts = ({
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-3 md:gap-y-9 gap-x-5 md:gap-x-6">
         {loading
-          ? Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)
+          ? Array.from({ length: 4 }).map((_, i) => <ProductCardSkeleton key={i} />)
           : productsToShow.map((item) => (
               <ProductCard
                 key={item.id}

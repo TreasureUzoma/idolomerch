@@ -1,16 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import Script from "next/script";
 import Image from "next/image";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
-// import { toast } from "sonner";
 
 export default function CartPage() {
-  const { cart, removeFromCart, updateQuantity } = useCart();
+  const { cart, removeFromCart, clearCart updateQuantity } = useCart();
   const { currency } = useCurrency();
 
   const [convertedTotal, setConvertedTotal] = useState<number | null>(null);
@@ -29,8 +29,54 @@ export default function CartPage() {
     // toast.success(`${name} removed from cart`);
   };
 
+  const payWithMonnify = () => {
+  if (currency !== "NGN") {
+    alert("Sorry, payment is only available in NGN at the moment.");
+    return;
+  }
+
+  if (typeof window === "undefined" || !window.MonnifySDK) {
+    console.error("Monnify SDK not available");
+    return;
+  }
+
+  const reference = `TX-${Date.now()}`;
+
+  window.MonnifySDK.initialize({
+    amount: convertedTotal || totalAmount,
+    currency: "NGN", // Force to NGN just in case
+    reference,
+    customerFullName: "Test User",
+    customerEmail: "test@example.com",
+    apiKey: process.env.NEXT_PUBLIC_MONNIFY_API_KEY!,
+    contractCode: process.env.NEXT_PUBLIC_MONNIFY_CONTRACT_CODE!,
+    paymentDescription: "Your Purchase on Idolomerch",
+    metadata: {
+      cart: cart.map((item) => item.name).join(", "),
+    },
+    onLoadStart: () => console.log("Payment loading..."),
+    onLoadComplete: () => console.log("Monnify SDK Loaded"),
+    onComplete: (response: any) => {
+      if (response.status === "PAID") {
+        alert("Payment successful!");
+        clearCart();
+      }
+    },
+    onClose: () => {
+      console.log("Payment window closed");
+    },
+  });
+};
+
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen">
+      {/* ✅ Load Monnify SDK */}
+      <Script
+        src="https://sdk.monnify.com/plugin/monnify.js"
+        strategy="afterInteractive"
+      />
+
       <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -103,7 +149,10 @@ export default function CartPage() {
                   : formatCurrency(totalAmount, currency)}
               </p>
 
-              <button className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition">
+              <button
+                onClick={payWithMonnify}
+                className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition"
+              >
                 Checkout
               </button>
             </div>
