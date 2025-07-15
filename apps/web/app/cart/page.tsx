@@ -109,7 +109,7 @@ export default function CartPage() {
             ))}
           </div>
 
-          <div className="fixed bottom-0 left-0 w-full md:static bg-white border-t md:border-none px-4 py-4 z-50">
+          <div className="fixed bottom-0 left-0 w-full md:static bg-white border-t md:border-none px-4 py-4 z-40">
             <div className="max-w-4xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2">
               <p className="text-base font-semibold text-gray-900">
                 Total:{" "}

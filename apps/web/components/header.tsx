@@ -14,7 +14,7 @@ export const Header = () => {
     { label: "Cart", href: "/cart" },
     { label: "Privacy Policy", href: "/privacy" },
     { label: "Refunds Policy", href: "/refunds-policy" },
-    { label: "Contact", href: "/contact" },
+    { label: "Contact", href: "https://x.com/idolodev" },
   ];
 
   const cartCount = cart.reduce((total, item) => total + item.quantity, 0);

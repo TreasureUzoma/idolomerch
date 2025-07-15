@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
+import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
 import { toast } from "@repo/ui/components/ui/sonner";
 import { Input } from "@repo/ui/components/ui/input";
@@ -15,6 +16,7 @@ import Link from "next/link";
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { currency } = useCurrency();
+  const router = useRouter();
 
   const [form, setForm] = useState({
     fullName: "",
@@ -28,11 +30,19 @@ export default function CheckoutPage() {
 
   const [monnifyReady, setMonnifyReady] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [convertedTotal, setConvertedTotal] = useState<number | null>(null);
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
+
+  useEffect(() => {
+    // Convert only once on load or when cart/currency changes
+    convertCurrency(totalAmount, currency).then((amount) => {
+      setConvertedTotal(amount);
+    });
+  }, [cart, currency, totalAmount]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -53,7 +63,7 @@ export default function CheckoutPage() {
 
     // @ts-ignore
     window.MonnifySDK.initialize({
-      amount: totalAmount,
+      amount: convertedTotal || totalAmount,
       currency: "NGN",
       reference,
       customerFullName: form.fullName,
@@ -137,11 +147,15 @@ export default function CheckoutPage() {
 
           <div className="flex justify-between items-center pt-4">
             <span className="font-semibold">
-              Total: {formatCurrency(totalAmount, currency)}
+              Total:{" "}
+              {convertedTotal !== null
+                ? formatCurrency(convertedTotal, currency)
+                : "..."}
             </span>
             <button
               onClick={handlePayment}
-              className="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90"
+              className="bg-primary text-white px-6 py-2 rounded hover:bg-primary/90 disabled:opacity-50"
+              disabled={!convertedTotal}
             >
               Complete Payment
             </button>
