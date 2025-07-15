@@ -10,7 +10,6 @@ const config = {
     "./src/**/*.{ts,tsx}",
     "../../packages/ui/src/**/*.{ts,tsx}",
   ],
-  // prefix: "ui-",
   theme: {
     container: {
       center: true,
@@ -23,6 +22,7 @@ const config = {
       colors: {
         myColor: "#a16207",
         primary: "#1D687B",
+        background: "#1D687B",
       },
       keyframes: {
         "accordion-down": {

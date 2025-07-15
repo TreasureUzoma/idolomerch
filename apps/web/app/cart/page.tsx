@@ -1,28 +1,29 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Script from "next/script";
+import React from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/cart";
+import { toast } from "@repo/ui/components/ui/sonner";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
 
 export default function CartPage() {
-  const { cart, removeFromCart, clearCart, updateQuantity } = useCart();
+  const router = useRouter();
+  const { cart, removeFromCart, updateQuantity } = useCart();
   const { currency } = useCurrency();
 
-  const [convertedTotal, setConvertedTotal] = useState<number | null>(null);
-  const [conversionRate, setConversionRate] = useState<number>(1);
-  const [monnifyReady, setMonnifyReady] = useState(false);
+  const [conversionRate, setConversionRate] = React.useState<number>(1);
+  const [convertedTotal, setConvertedTotal] = React.useState<number | null>(null);
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
     0
   );
 
-  useEffect(() => {
+  React.useEffect(() => {
     convertCurrency(1, currency).then((rate) => {
       setConversionRate(rate);
       setConvertedTotal(rate * totalAmount);
@@ -31,69 +32,16 @@ export default function CartPage() {
 
   const handleRemove = (id: string, name: string) => {
     removeFromCart(id);
+    toast.success(`${name} removed from cart`);
   };
 
-  const payWithMonnify = () => {
-    if (currency !== "NGN") {
-      alert("Sorry, payment is only available in NGN at the moment.");
-      return;
-    }
-
-    if (!monnifyReady) {
-      alert("Monnify is still loading. Please wait...");
-      return;
-    }
-
-    // @ts-ignore
-    if (typeof window === "undefined" || !window.MonnifySDK) {
-      console.error("Monnify SDK not available");
-      return;
-    }
-
-    const reference = `TX-${Date.now()}`;
-
-    // @ts-ignore
-    window.MonnifySDK.initialize({
-      amount: convertedTotal || totalAmount,
-      currency: "NGN",
-      reference,
-      customerFullName: "Test User",
-      customerEmail: "test@example.com",
-      apiKey: process.env.NEXT_PUBLIC_MONNIFY_API_KEY!,
-      contractCode: process.env.NEXT_PUBLIC_MONNIFY_CONTRACT_CODE!,
-      paymentDescription: "Your Purchase on Idolomerch",
-      metadata: {
-        cart: cart.map((item) => item.name).join(", "),
-      },
-      onLoadStart: () => console.log("Payment loading..."),
-      onLoadComplete: () => console.log("Monnify SDK Loaded"),
-      onComplete: (response: any) => {
-        if (response.status === "PAID") {
-          alert("Payment successful!");
-          clearCart();
-        }
-      },
-      onClose: () => {
-        console.log("Payment window closed");
-      },
-    });
+  const handleQuantityChange = (id: string, newQty: number, name: string) => {
+    updateQuantity(id, newQty);
+    toast.success(`Updated ${name} to ${newQty}`);
   };
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-6 min-h-screen">
-      {/* Load Monnify SDK */}
-      <Script
-        src="https://sdk.monnify.com/plugin/monnify.js"
-        strategy="afterInteractive"
-        onLoad={() => {
-          // @ts-ignore
-          if (window.MonnifySDK) {
-            setMonnifyReady(true);
-            console.log("Monnify SDK loaded and ready.");
-          }
-        }}
-      />
-
       <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
 
       {cart.length === 0 ? (
@@ -124,7 +72,11 @@ export default function CartPage() {
                   <div className="flex items-center gap-2 mt-1">
                     <button
                       onClick={() =>
-                        updateQuantity(item.id, Math.max(1, item.quantity - 1))
+                        handleQuantityChange(
+                          item.id,
+                          Math.max(1, item.quantity - 1),
+                          item.name
+                        )
                       }
                       className="p-1 border rounded hover:bg-gray-100"
                       aria-label="Decrease quantity"
@@ -136,7 +88,7 @@ export default function CartPage() {
 
                     <button
                       onClick={() =>
-                        updateQuantity(item.id, item.quantity + 1)
+                        handleQuantityChange(item.id, item.quantity + 1, item.name)
                       }
                       className="p-1 border rounded hover:bg-gray-100"
                       aria-label="Increase quantity"
@@ -167,7 +119,7 @@ export default function CartPage() {
               </p>
 
               <button
-                onClick={payWithMonnify}
+                onClick={() => router.push("/checkout")}
                 className="w-full md:w-auto bg-primary text-white text-sm px-6 py-2.5 rounded-md hover:bg-primary/90 transition"
               >
                 Checkout

@@ -3,13 +3,14 @@ import { CartProvider } from "@/context/cart";
 import type { Metadata } from "next";
 import "@repo/ui/globals.css";
 import "./page.module.css";
+import { Toaster } from "@repo/ui/components/ui/sonner";
 import { Header } from "../components/header";
 import { Footer } from "../components/footer";
 
 export const metadata: Metadata = {
   title: "idolomerch - Shop weirdly interesting merchs by idolodev.",
   description:
-    "Uncover limited drops, playful designs, and chaotic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
+    "Uncover limited drops, playful designs, and chaoqtic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
 };
 
 export default function RootLayout({
@@ -33,6 +34,7 @@ export default function RootLayout({
             <Footer />
           </CartProvider>
         </CurrencyProvider>
+        <Toaster />
       </body>
     </html>
   );
