@@ -25,6 +25,7 @@ func main() {
 	api.Post("/login", handlers.Login)
 	api.Post("/logout", handlers.Logout)
 	api.Get("/me", middleware.RequireAuth(store), handlers.Me)
+	api.Get("/products", handlers.GetProducts)
 
 	log.Fatal(app.Listen(":3001"))
 }
