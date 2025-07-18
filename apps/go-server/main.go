@@ -22,10 +22,18 @@ func main() {
 	handlers.Store = store // share it with handler package
 
 	api := app.Group("/api/v1")
+
+	api.Get("/health", func(c *fiber.Ctx) error {
+	return c.JSON(fiber.Map{
+		"message": "Server is healthy",
+	})
+})
+
 	api.Post("/login", handlers.Login)
 	api.Post("/logout", handlers.Logout)
 	api.Get("/me", middleware.RequireAuth(store), handlers.Me)
 	api.Get("/products", handlers.GetProducts)
+	api.Post("/upload-product",  middleware.RequireAuth(store), handlers.UploadProduct)
 
 	log.Fatal(app.Listen(":3001"))
 }

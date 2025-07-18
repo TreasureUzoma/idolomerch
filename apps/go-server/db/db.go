@@ -1,66 +1,37 @@
 package db
 
 import (
+	"database/sql"
 	"log"
-	"sync"
-	"time"
+	"os"
 
-	"github.com/treasureuzoma/idolomerch-api/models"
+	"github.com/joho/godotenv"
+	_ "github.com/lib/pq"
 )
 
-var (
-	productCache     []models.Product
-	cacheMutex       sync.RWMutex
-	cacheLastUpdated time.Time
-	cacheTTL         = 60 * time.Second
-)
+var DB *sql.DB // global variable accessible across the db package
 
-func GetCachedProducts() []models.Product {
-	cacheMutex.RLock()
-	defer cacheMutex.RUnlock()
-
-	// if cache is still valid, return it
-	if time.Since(cacheLastUpdated) < cacheTTL {
-		return productCache
-	}
-
-	// else, load from DB
-	cacheMutex.RUnlock() // unlock before writing
-	cacheMutex.Lock()
-	defer cacheMutex.Unlock()
-
-	rows, err := DB.Query(`SELECT id, title, description, price, currency, category, image, status, stock, options, tags, more_details, created_at FROM products`)
+func Connect() {
+	err := godotenv.Load()
 	if err != nil {
-		log.Println("Failed to fetch products from DB:", err)
-		return []models.Product{}
-	}
-	defer rows.Close()
-
-	var products []models.Product
-	for rows.Next() {
-		var p models.Product
-		var optionsJSON, tagsJSON, moreDetailsJSON string
-
-		err := rows.Scan(
-			&p.ID, &p.Title, &p.Description, &p.Price, &p.Currency,
-			&p.Category, &p.Image, &p.Status, &p.Stock,
-			&optionsJSON, &tagsJSON, &moreDetailsJSON, &p.CreatedAt,
-		)
-		if err != nil {
-			log.Println("Error scanning product:", err)
-			continue
-		}
-
-		// parse JSON fields
-		_ = json.Unmarshal([]byte(optionsJSON), &p.Options)
-		_ = json.Unmarshal([]byte(tagsJSON), &p.Tags)
-		_ = json.Unmarshal([]byte(moreDetailsJSON), &p.MoreDetails)
-
-		products = append(products, p)
+		log.Fatal("Error loading .env file")
 	}
 
-	productCache = products
-	cacheLastUpdated = time.Now()
+	connStr := os.Getenv("DB_URL")
+	if connStr == "" {
+		log.Fatal("DB_URL not set in .env")
+	}
 
-	return productCache
+	db, err := sql.Open("postgres", connStr)
+	if err != nil {
+		log.Fatal("Failed to open DB:", err)
+	}
+
+	if err := db.Ping(); err != nil {
+		log.Fatal("Failed to ping DB:", err)
+	}
+
+	DB = db
+	log.Println("Connected to Neon DB")
 }
+

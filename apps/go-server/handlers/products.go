@@ -2,10 +2,10 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/treasureuzoma/idolomerch-api/db"
+	"github.com/treasureuzoma/idolomerch-api/store"
 )
 
 func GetProducts(c *fiber.Ctx) error {
-	products := db.GetCachedProducts()
+	products := store.GetCachedProducts()
 	return c.JSON(products)
 }
