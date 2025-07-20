@@ -33,7 +33,13 @@ func main() {
 	api.Post("/logout", handlers.Logout)
 	api.Get("/me", middleware.RequireAuth(store), handlers.Me)
 	api.Get("/products", handlers.GetProducts)
-	api.Post("/upload-product",  middleware.RequireAuth(store), handlers.UploadProduct)
+	api.Post("/upload-product", middleware.RequireAuth(store), handlers.UploadProduct)
+	api.Put("/edit-product/:id", middleware.RequireAuth(store), handlers.EditProduct)
+	api.Delete("/delete-product/:id", middleware.RequireAuth(store), handlers.DeleteProduct)
+	api.Get("/summary", middleware.RequireAuth(store), handlers.GetSummary)
+
+	api.Post("/monnify/webhook", handlers.MonnifyWebhook)
+
 
 	log.Fatal(app.Listen(":3001"))
 }

@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type Product struct {
 	ID          string         `json:"id"`
 	Title       string         `json:"title"`
@@ -13,7 +15,7 @@ type Product struct {
 	Options     ProductOptions `json:"options"`
 	Tags        []string       `json:"tags"`
 	MoreDetails []string       `json:"moreDetails"`
-	CreatedAt   string         `json:"created_at"`
+	CreatedAt   time.Time      `json:"created_at"`
 }
 
 type ProductOptions struct {
