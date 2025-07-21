@@ -1,5 +1,7 @@
-import { Button } from "@repo/ui/components/ui/button";
-
 export default function Home() {
-  return <Button variant="destructive">Click Me</Button>;
+  return (
+    <div className="items-center justify-items-center min-h-screen p-8 sm:p-20">
+      dashboard
+    </div>
+  );
 }
