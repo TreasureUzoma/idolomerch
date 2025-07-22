@@ -2,11 +2,8 @@
 
 import { useState } from "react";
 import { toast } from "@repo/ui/components/ui/sonner";
-import { Input } from "@repo/ui/components/ui/input";
-import { Label } from "@repo/ui/components/ui/label";
-import { Button } from "@repo/ui/components/ui/button";
-import { baseUrl } from "@/constants";
 import { useRouter } from "next/navigation";
+import { baseUrl } from "@/constants";
 
 export const LoginForm = () => {
   const router = useRouter();
@@ -52,34 +49,40 @@ export const LoginForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4">
-      <div>
-        <Label htmlFor="email">Email</Label>
-        <Input
+    <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4.5 shadow-sm p-6 md:p-8">
+      <div className="flex flex-col gap-1">
+        <label htmlFor="email" className="text-sm font-medium">Email</label>
+        <input
           id="email"
           name="email"
           type="email"
           value={form.email}
           onChange={handleChange}
           required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-background"
         />
       </div>
 
-      <div>
-        <Label htmlFor="password">Password</Label>
-        <Input
+      <div className="flex flex-col gap-1">
+        <label htmlFor="password" className="text-sm font-medium">Password</label>
+        <input
           id="password"
           name="password"
           type="password"
           value={form.password}
           onChange={handleChange}
           required
+          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-background"
         />
       </div>
 
-      <Button type="submit" disabled={loading} className="w-full">
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-background text-white py-2 px-4 rounded-md disabled:opacity-60"
+      >
         {loading ? "Logging in..." : "Login"}
-      </Button>
+      </button>
     </form>
   );
 };
