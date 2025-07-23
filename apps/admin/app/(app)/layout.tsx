@@ -1,4 +1,5 @@
-import { SidebarWithBottomNav } from "@/components/sidebar"
+import { SidebarWithBottomNav } from "@/components/sidebar";
+import { SessionsProvider } from "@/providers/session";
 
 export default function ApptLayout({
   children,
@@ -6,10 +7,10 @@ export default function ApptLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div>
-        <SidebarWithBottomNav>
-        {children} 
-        </SidebarWithBottomNav>
-    </div>
+    <SessionsProvider>
+      <div>
+        <SidebarWithBottomNav>{children}</SidebarWithBottomNav>
+      </div>
+    </SessionsProvider>
   );
 }

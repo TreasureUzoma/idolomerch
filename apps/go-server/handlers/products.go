@@ -1,9 +1,11 @@
+package handlers
+
 import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/treasureuzoma/idolomerch-api/models"
 	"github.com/treasureuzoma/idolomerch-api/store"
-	"github.com/treasureuzoma/idolomerch-api/utils"
 )
 
 func GetProducts(c *fiber.Ctx) error {
@@ -11,17 +13,14 @@ func GetProducts(c *fiber.Ctx) error {
 	search := strings.ToLower(c.Query("search"))
 
 	if search != "" {
-		filtered := make([]map[string]interface{}, 0)
+		filtered := make([]models.Product, 0)
 
 		for _, product := range products {
-			matched := false
-			for _, value := range product {
-				if strings.Contains(strings.ToLower(utils.ToString(value)), search) {
-					matched = true
-					break
-				}
-			}
-			if matched {
+			// manually check relevant fields (adjust as needed)
+			if strings.Contains(strings.ToLower(product.Title), search) ||
+				strings.Contains(strings.ToLower(product.Description), search) ||
+				strings.Contains(strings.ToLower(product.Category), search) ||
+				strings.Contains(strings.ToLower(product.Currency), search) {
 				filtered = append(filtered, product)
 			}
 		}

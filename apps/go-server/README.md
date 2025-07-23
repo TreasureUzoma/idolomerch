@@ -20,7 +20,6 @@ ADMIN_PASSWORD=your_secure_password
 
 # JWT secrets for authentication (generate strong, random strings)
 JWT_SECRET=super_secret_jwt_key
-JWT_REFRESH_SECRET=another_super_secret_refresh_key
 
 # Cloudinary API details for image uploads
 CLOUDINARY_CLOUD_NAME=your_cloud_name
@@ -33,6 +32,9 @@ MONNIFY_CLIENT_SECRET=your_monnify_client_secret
 # Telegram bot details to receive order notifications
 TELEGRAM_BOT_TOKEN=your_telegram_bot_token
 TELEGRAM_CHAT_ID=your_telegram_chat_id
+
+# Admin URL
+ADMIN_DOMAIN=
 ```
 
 ### 2. Database Setup

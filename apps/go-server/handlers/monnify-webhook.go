@@ -10,10 +10,12 @@ import (
 	"log"
 	"net"
 	"net/http"
+	"net/url"
 	"os"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/joho/godotenv"
 	"github.com/treasureuzoma/idolomerch-api/db"
 )
 
@@ -40,9 +42,8 @@ type EventData struct {
 }
 
 func init() {
-	// crash early if env variables are not set
-	if clientSecret == "" || telegramToken == "" || chatID == "" {
-		log.Fatal("One or more required environment variables are missing.")
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file in handlers/auth.go")
 	}
 }
 
@@ -171,7 +172,7 @@ func saveOrderToDB(data EventData) error {
 
 func sendToTelegram(data EventData) {
 	message := fmt.Sprintf(
-		"💸 *New Payment Received!*\n\n👤 *Name:* %s\n📧 *Email:* %s\n💰 *Amount:* ₦%.2f\n📦 *Product ID:* %s\n🔖 *Ref:* %s",
+		"💸Cha Ching - *New Payment Received!*\n\n👤 *Name:* %s\n📧 *Email:* %s\n💰 *Amount:* ₦%.2f\n📦 *Product ID:* %s\n🔖 *Ref:* %s",
 		data.CustomerName,
 		data.CustomerEmail,
 		data.AmountPaid,
@@ -179,13 +180,14 @@ func sendToTelegram(data EventData) {
 		data.TransactionReference,
 	)
 
-	url := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", telegramToken)
+	urlStr := fmt.Sprintf("https://api.telegram.org/bot%s/sendMessage", telegramToken)
 
-	resp, err := http.PostForm(url, url.Values{
-		"chat_id":    {chatID},
-		"text":       {message},
-		"parse_mode": {"Markdown"},
-	})
+	form := url.Values{}
+	form.Set("chat_id", chatID)
+	form.Set("text", message)
+	form.Set("parse_mode", "Markdown")
+
+	resp, err := http.PostForm(urlStr, form)
 	if err != nil {
 		log.Println("Telegram send error:", err)
 		return

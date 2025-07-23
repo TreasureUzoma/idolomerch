@@ -5,10 +5,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
+
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	if err := godotenv.Load(); err != nil {
+		log.Fatal("Error loading .env file in handlers/auth.go")
+	}
+}
 
 func UploadBase64ToCloudinary(base64Str string) (string, error) {
 	url := fmt.Sprintf("https://api.cloudinary.com/v1_1/%s/image/upload", os.Getenv("CLOUDINARY_CLOUD_NAME"))
