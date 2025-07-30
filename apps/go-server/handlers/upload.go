@@ -12,11 +12,13 @@ import (
 )
 
 func UploadProduct(c *fiber.Ctx) error {
+	var input models.ProductInput
+
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	// Upload main image
+	// upload main image
 	imageURL, err := utils.UploadBase64ToCloudinary(input.ImageBase64)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to upload main image"})

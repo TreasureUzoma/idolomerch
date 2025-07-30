@@ -1,7 +1,9 @@
 package handlers
 
+// TODO: delete image from cloudinary
+
 import (
-	"fmt"
+	// "fmt"
 	"net/url"
 	"path"
 	"strings"
@@ -23,12 +25,13 @@ func DeleteProduct(c *fiber.Ctx) error {
 		return c.Status(404).JSON(fiber.Map{"error": "Product not found"})
 	}
 
+	/*
 	publicID, err := extractCloudinaryPublicID(imageURL)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to extract image public ID"})
 	}
 
-	/* err = utils.DeleteImageFromCloudinary(publicID)
+	 err = utils.DeleteImageFromCloudinary(publicID)
 	 if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete image from Cloudinary"})
 	} */
