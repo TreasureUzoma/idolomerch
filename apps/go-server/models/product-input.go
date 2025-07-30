@@ -6,7 +6,7 @@ type ProductInput struct {
 	Price       float64        `json:"price"`
 	Currency    string         `json:"currency"`
 	Category    string         `json:"category"`
-	ImageBase64 string         `json:"imageBase64"`
+	ImageBase64 string         `json:"image"`
 	Status      string         `json:"status"`
 	Stock       int            `json:"stock"`
 	Options     ProductOptions `json:"options"`

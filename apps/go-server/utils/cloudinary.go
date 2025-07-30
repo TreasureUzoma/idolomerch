@@ -54,6 +54,7 @@ func UploadBase64ToCloudinary(base64Str string) (string, error) {
 	return result.SecureURL, nil
 }
 
+// TODO: fix n refactor
 func DeleteImageFromCloudinary(publicID string) error {
 	url := fmt.Sprintf("https://api.cloudinary.com/v1_1/%s/image/destroy", os.Getenv("CLOUDINARY_CLOUD_NAME"))
 

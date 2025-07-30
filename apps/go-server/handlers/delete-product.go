@@ -8,7 +8,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/treasureuzoma/idolomerch-api/db"
-	"github.com/treasureuzoma/idolomerch-api/utils"
+	// "github.com/treasureuzoma/idolomerch-api/utils"
 )
 
 func DeleteProduct(c *fiber.Ctx) error {
@@ -28,10 +28,10 @@ func DeleteProduct(c *fiber.Ctx) error {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to extract image public ID"})
 	}
 
-	err = utils.DeleteImageFromCloudinary(publicID)
-	if err != nil {
+	/* err = utils.DeleteImageFromCloudinary(publicID)
+	 if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to delete image from Cloudinary"})
-	}
+	} */
 
 	result, err := db.DB.Exec(`DELETE FROM products WHERE id = $1`, id)
 	if err != nil {

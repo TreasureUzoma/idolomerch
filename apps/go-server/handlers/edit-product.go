@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
+	"strings"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/treasureuzoma/idolomerch-api/db"
 	"github.com/treasureuzoma/idolomerch-api/models"
@@ -19,7 +22,7 @@ func EditProduct(c *fiber.Ctx) error {
 		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
 	}
 
-	// fetch current image (in case a new one isn't provided)
+	// Fetch current image (if new one isn't provided)
 	var currentImage string
 	err := db.DB.QueryRow(`SELECT image FROM products WHERE id = $1`, id).Scan(&currentImage)
 	if err != nil {
@@ -28,31 +31,33 @@ func EditProduct(c *fiber.Ctx) error {
 
 	imageURL := currentImage
 
-	// Upload main product image if a new base64 is provided
-	if input.ImageBase64 != "" {
+	// Upload new main image if base64 provided
+	if strings.HasPrefix(input.ImageBase64, "data:") {
 		imageURL, err = utils.UploadBase64ToCloudinary(input.ImageBase64)
 		if err != nil {
 			return c.Status(500).JSON(fiber.Map{"error": "Failed to upload main image"})
 		}
 	}
 
-	// Upload variant images if they contain base64 strings
-	for i := range input.Options.Variants {
-		if input.Options.Variants[i].ImageBase64 != "" {
-			url, err := utils.UploadBase64ToCloudinary(input.Options.Variants[i].ImageBase64)
+	// Upload new color images if any are base64
+	for i, color := range input.Options.Colors {
+		if strings.HasPrefix(color.Image, "data:") {
+			uploadedURL, err := utils.UploadBase64ToCloudinary(color.Image)
 			if err != nil {
-				return c.Status(500).JSON(fiber.Map{"error": "Failed to upload variant image"})
+				return c.Status(500).JSON(fiber.Map{
+					"error": fmt.Sprintf("Failed to upload image for color: %s", color.Name),
+				})
 			}
-			input.Options.Variants[i].Image = url
+			input.Options.Colors[i].Image = uploadedURL
 		}
 	}
 
-	// Marshal fields to JSON for DB
+	// Marshal fields for DB
 	optionsJSON, _ := json.Marshal(input.Options)
 	tagsJSON, _ := json.Marshal(input.Tags)
 	moreDetailsJSON, _ := json.Marshal(input.MoreDetails)
 
-	// Update the product record in DB
+	// Update product
 	_, err = db.DB.Exec(`
 		UPDATE products
 		SET title = $1, description = $2, price = $3, currency = $4,
