@@ -3,7 +3,6 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/treasureuzoma/idolomerch-api/db"
@@ -12,35 +11,67 @@ import (
 )
 
 func UploadProduct(c *fiber.Ctx) error {
-	var input models.ProductInput
+	// Parse text fields
+	title := c.FormValue("title")
+	description := c.FormValue("description")
+	price := c.FormValue("price")
+	currency := c.FormValue("currency")
+	category := c.FormValue("category")
+	status := c.FormValue("status")
+	stock := c.FormValue("stock")
+	tagsJSON := c.FormValue("tags")
+	moreDetailsJSON := c.FormValue("moreDetails")
+	optionsJSON := c.FormValue("options")
 
-	if err := c.BodyParser(&input); err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "Invalid input"})
+	// Parse main image file
+	mainImageFile, err := c.FormFile("image")
+	if err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Main image is required"})
 	}
-
-	// upload main image
-	imageURL, err := utils.UploadBase64ToCloudinary(input.ImageBase64)
+	mainImageURL, err := utils.UploadFileToCloudinary(mainImageFile)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to upload main image"})
 	}
 
-	// Upload color option images
-	for i, color := range input.Options.Colors {
-		if strings.HasPrefix(color.Image, "data:") {
-			uploadedURL, err := utils.UploadBase64ToCloudinary(color.Image)
-			if err != nil {
-				return c.Status(500).JSON(fiber.Map{
-					"error": fmt.Sprintf("Failed to upload image for color option: %s", color.Name),
-				})
-			}
-			input.Options.Colors[i].Image = uploadedURL
+	// Parse tags
+	var tags []string
+	if tagsJSON != "" {
+		if err := json.Unmarshal([]byte(tagsJSON), &tags); err != nil {
+			return c.Status(400).JSON(fiber.Map{"error": "Invalid tags format"})
 		}
 	}
 
-	// Generate slugified ID
-	baseID := utils.GenerateSlug(input.Title)
-	finalID := baseID
+	// Parse moreDetails
+	var moreDetails []string
+	if moreDetailsJSON != "" {
+		if err := json.Unmarshal([]byte(moreDetailsJSON), &moreDetails); err != nil {
+			return c.Status(400).JSON(fiber.Map{"error": "Invalid moreDetails format"})
+		}
+	}
 
+	// Parse options (including color names)
+	var options models.ProductOptions
+	if err := json.Unmarshal([]byte(optionsJSON), &options); err != nil {
+		return c.Status(400).JSON(fiber.Map{"error": "Invalid options format"})
+	}
+
+	// Upload color images
+	for i, color := range options.Colors {
+		// The file input name must be in this format: options.colors.0.image, options.colors.1.image, etc.
+		fieldName := fmt.Sprintf("options.colors.%d.image", i)
+		file, err := c.FormFile(fieldName)
+		if err == nil && file != nil {
+			imageURL, err := utils.UploadFileToCloudinary(file)
+			if err != nil {
+				return c.Status(500).JSON(fiber.Map{"error": fmt.Sprintf("Failed to upload image for color: %s", color.Name)})
+			}
+			options.Colors[i].Image = imageURL
+		}
+	}
+
+	// Generate unique product ID
+	baseID := utils.GenerateSlug(title)
+	finalID := baseID
 	counter := 1
 	for {
 		var exists bool
@@ -55,19 +86,19 @@ func UploadProduct(c *fiber.Ctx) error {
 		counter++
 	}
 
-	// Convert to JSON
-	optionsJSON, _ := json.Marshal(input.Options)
-	tagsJSON, _ := json.Marshal(input.Tags)
-	moreDetailsJSON, _ := json.Marshal(input.MoreDetails)
+	// Marshal options to JSON for DB
+	optionsBytes, _ := json.Marshal(options)
+	tagsBytes, _ := json.Marshal(tags)
+	moreDetailsBytes, _ := json.Marshal(moreDetails)
 
 	// Insert into DB
 	_, err = db.DB.Exec(`
 		INSERT INTO products (id, title, description, price, currency, category, image, status, stock, options, tags, more_details)
 		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
 	`,
-		finalID, input.Title, input.Description, input.Price, input.Currency,
-		input.Category, imageURL, input.Status, input.Stock,
-		optionsJSON, tagsJSON, moreDetailsJSON,
+		finalID, title, description, price, currency,
+		category, mainImageURL, status, stock,
+		optionsBytes, tagsBytes, moreDetailsBytes,
 	)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "DB insert failed"})
@@ -76,6 +107,6 @@ func UploadProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"message": "Product uploaded successfully",
 		"id":      finalID,
-		"image":   imageURL,
+		"image":   mainImageURL,
 	})
 }

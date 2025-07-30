@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 export interface ColorOption {
   name: string;
-  image: string;
+  image: File | null;
 }
 
 interface ProductFormInput {
@@ -19,7 +19,7 @@ interface ProductFormInput {
   moreDetails?: string[];
   options?: {
     sizes?: string[];
-    colors?: ColorOption[];
+    colors?: { name: string; image: string }[]; // image URL or reference string
   };
   image?: string;
   id?: string;
@@ -36,8 +36,10 @@ export function useProductForm(initialData: ProductFormInput = {}) {
   const [tags, setTags] = useState<string[]>(initialData.tags || []);
   const [sizes, setSizes] = useState<string[]>(initialData.options?.sizes || []);
   const [moreDetails, setMoreDetails] = useState<string[]>(initialData.moreDetails || []);
-  const [colors, setColors] = useState<ColorOption[]>(initialData.options?.colors || []);
-  const [mainImage, setMainImage] = useState(initialData.image || "");
+  const [colors, setColors] = useState<ColorOption[]>(
+    (initialData.options?.colors || []).map(c => ({ name: c.name, image: null }))
+  );
+  const [mainImage, setMainImage] = useState<File | null>(null);
   const [newColorName, setNewColorName] = useState("");
 
   const [tagInput, setTagInput] = useState(tags.join(", "));
@@ -45,43 +47,31 @@ export function useProductForm(initialData: ProductFormInput = {}) {
   const [detailInput, setDetailInput] = useState(moreDetails.join(", "));
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Sync comma-separated inputs
   useEffect(() => {
-    setTags(tagInput.split(",").map((t) => t.trim()).filter(Boolean));
+    setTags(tagInput.split(",").map(t => t.trim()).filter(Boolean));
   }, [tagInput]);
 
   useEffect(() => {
-    setSizes(sizeInput.split(",").map((s) => s.trim()).filter(Boolean));
+    setSizes(sizeInput.split(",").map(s => s.trim()).filter(Boolean));
   }, [sizeInput]);
 
   useEffect(() => {
-    setMoreDetails(detailInput.split(",").map((d) => d.trim()).filter(Boolean));
+    setMoreDetails(detailInput.split(",").map(d => d.trim()).filter(Boolean));
   }, [detailInput]);
 
-  const convertToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-      reader.readAsDataURL(file);
-    });
+  const handleMainImageUpload = (file: File) => {
+    setMainImage(file);
   };
 
-  const handleMainImageUpload = async (file: File) => {
-    const base64 = await convertToBase64(file);
-    setMainImage(base64);
-  };
-
-  const handleColorImageUpload = async (index: number, file: File) => {
-    const base64 = await convertToBase64(file);
+  const handleColorImageUpload = (index: number, file: File) => {
     const updated = [...colors];
-    updated[index].image = base64;
+    updated[index].image = file;
     setColors(updated);
   };
 
   const addColor = () => {
     if (newColorName.trim()) {
-      setColors([...colors, { name: newColorName.trim(), image: "" }]);
+      setColors([...colors, { name: newColorName.trim(), image: null }]);
       setNewColorName("");
     }
   };
@@ -102,34 +92,52 @@ export function useProductForm(initialData: ProductFormInput = {}) {
     setSizes([]);
     setMoreDetails([]);
     setColors([]);
-    setMainImage("");
+    setMainImage(null);
     setTagInput("");
     setSizeInput("");
     setDetailInput("");
     setNewColorName("");
   };
 
-  const getFormData = (): ProductFormInput => {
-    return {
-      id:
-        initialData?.id ||
-        `${title.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`,
-      title,
-      description,
-      price,
-      currency,
-      category,
-      status,
-      stock,
-      image: "",
-      imageBase64: mainImage,
-      tags,
-      moreDetails,
-      options: {
-        sizes,
-        colors,
-      },
-    };
+  const getFormData = () => {
+    const formData = new FormData();
+    const id =
+      initialData?.id ||
+      `${title.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
+
+    formData.append("id", id);
+    formData.append("title", title);
+    formData.append("description", description);
+    formData.append("price", price.toString());
+    formData.append("currency", currency);
+    formData.append("category", category);
+    formData.append("status", status);
+    formData.append("stock", stock.toString());
+
+    if (mainImage) {
+      formData.append("image", mainImage);
+    }
+
+    tags.forEach((tag, i) => {
+      formData.append(`tags[${i}]`, tag);
+    });
+
+    sizes.forEach((size, i) => {
+      formData.append(`options.sizes[${i}]`, size);
+    });
+
+    moreDetails.forEach((detail, i) => {
+      formData.append(`moreDetails[${i}]`, detail);
+    });
+
+    colors.forEach((color, i) => {
+      formData.append(`options.colors[${i}].name`, color.name);
+      if (color.image) {
+        formData.append(`options.colors[${i}].image`, color.image);
+      }
+    });
+
+    return formData;
   };
 
   return {

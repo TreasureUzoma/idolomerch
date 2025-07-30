@@ -125,7 +125,7 @@ export default function ProductForm({
                     />
                   ) : (
                     <div className="py-8">
-                      <div className="text-4xl text-gray-400 mb-2">
+                      <div className="text-4xl text-gray-400 mb-2 w-full flex items-center justify-center">
                         <ImageIcon />
                       </div>
                       <p className="text-gray-500">Click to upload main image</p>
