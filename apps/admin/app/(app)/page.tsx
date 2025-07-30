@@ -40,7 +40,7 @@ export default function DashboardPage() {
   }
 
   const hasSalesData =
-    Array.isArray(data.salesOverTime) && data.salesOverTime.length > 0;
+    Array.isArray(data?.salesOverTime) && data?.salesOverTime.length > 0;
 
   return (
     <div className="p-4 space-y-6">
@@ -57,7 +57,7 @@ export default function DashboardPage() {
         <div className="border rounded-lg p-4 shadow">
           <h3 className="text-sm text-gray-500">Total Revenue</h3>
           <p className="text-2xl font-bold">
-            ₦{data.totalRevenue.toLocaleString()}
+            ${data.totalRevenue.toLocaleString()}
           </p>
         </div>
       </div>
@@ -74,7 +74,7 @@ export default function DashboardPage() {
                 className="flex justify-between text-sm text-gray-700"
               >
                 <span>{sale.date}</span>
-                <span>₦{sale.amount.toLocaleString()}</span>
+                <span>${sale.amount.toLocaleString()}</span>
               </li>
             ))}
           </ul>

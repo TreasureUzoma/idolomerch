@@ -121,7 +121,8 @@ export function useProductForm(initialData: ProductFormInput = {}) {
       category,
       status,
       stock,
-      image: mainImage,
+      image: "",
+      imageBase64: mainImage,
       tags,
       moreDetails,
       options: {

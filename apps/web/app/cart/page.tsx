@@ -56,11 +56,12 @@ export default function CartPage() {
               >
                 <div className="relative w-20 h-20 shrink-0">
                   <Image
-                    src={item.image || "/images/default.png"}
-                    alt={item.name}
-                    fill
-                    className="object-cover rounded"
-                  />
+                  src={item.image || "/images/default.png"}
+                  alt={item.name}
+                  width={80}
+                  height={80}
+                  className="object-cover rounded"
+                 />
                 </div>
 
                 <div className="flex-1 space-y-1">

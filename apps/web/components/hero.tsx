@@ -9,6 +9,7 @@ export const Hero = () => {
   const [query, setQuery] = useState("");
 
   const handleSearch = () => {
+    console.log("called")
     router.push(`/?search=${encodeURIComponent(query)}`);
   };
 
@@ -21,7 +22,7 @@ export const Hero = () => {
         placeholder="Find Products"
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        onSearch={handleSearch}
+        onSearch={handleSearch} 
       />
     </div>
   );

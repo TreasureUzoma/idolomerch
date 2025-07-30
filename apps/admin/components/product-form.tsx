@@ -39,20 +39,20 @@ export default function ProductForm({
           {/* Basic Info */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
-              <inputField
+              <InputField
                 label="Product Title *"
                 value={form.title}
                 onChange={(e) => form.setTitle(e.target.value)}
                 placeholder="Enter product title"
               />
-              <inputField
+              <InputField
                 label="Category *"
                 value={form.category}
                 onChange={(e) => form.setCategory(e.target.value)}
                 placeholder="e.g., Clothing, Electronics"
               />
               <div className="grid grid-cols-2 gap-4">
-                <inputField
+                <InputField
                   label="Price *"
                   type="number"
                   value={form.price}
@@ -74,7 +74,7 @@ export default function ProductForm({
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">
-                <inputField
+                <InputField
                   label="Stock Quantity"
                   type="number"
                   value={form.stock}
@@ -151,21 +151,21 @@ export default function ProductForm({
 
           {/* Tags / Sizes / Instructions */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <inputField
+            <InputField
               label="Tags"
               value={form.tagInput}
               onChange={(e) => form.setTagInput(e.target.value)}
               placeholder="t-shirt, logo, cotton"
               helpText="Separate with commas"
             />
-            <inputField
+            <InputField
               label="Available Sizes"
               value={form.sizeInput}
               onChange={(e) => form.setSizeInput(e.target.value)}
               placeholder="S, M, L, XL"
               helpText="Separate with commas"
             />
-            <inputField
+            <InputField
               label="Care Instructions"
               value={form.detailInput}
               onChange={(e) => form.setDetailInput(e.target.value)}
@@ -259,7 +259,7 @@ export default function ProductForm({
   );
 }
 
-const inputField = ({
+const InputField = ({
   label,
   value,
   onChange,

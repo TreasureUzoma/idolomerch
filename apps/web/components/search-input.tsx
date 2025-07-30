@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { Search } from "lucide-react";
 
 interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
@@ -11,14 +11,14 @@ interface SearchInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
 export const SearchInput = ({
   placeholder = "Search...",
   onSearch,
+  value,
+  onChange,
   ...props
 }: SearchInputProps) => {
-  const [value, setValue] = useState("");
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (value.trim()) {
-      onSearch(value.trim());
+    if (typeof value === "string" && value.trim()) {
+      onSearch();
     }
   };
 
@@ -36,7 +36,8 @@ export const SearchInput = ({
       <input
         type="text"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={onChange}
+        name="search"
         placeholder={placeholder}
         {...props}
         className={`w-full pl-4 pr-11 py-3.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-black ${

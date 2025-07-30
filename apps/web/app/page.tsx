@@ -1,6 +1,7 @@
 import { Hero } from "@/components/hero";
 import Products from "@/components/products";
 import { baseUrl } from "@/constants";
+import { ServerWaker } from "@/components/server-waker";
 
 export default async function Home({
   searchParams,
@@ -28,6 +29,7 @@ export default async function Home({
     <div className="min-h-screen">
       <Hero />
       <Products products={products} />
+      <ServerWaker />
     </div>
   );
 }

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import Script from "next/script";
 import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
@@ -16,7 +15,6 @@ import Link from "next/link";
 export default function CheckoutPage() {
   const { cart, clearCart } = useCart();
   const { currency } = useCurrency();
-  const router = useRouter();
 
   const [form, setForm] = useState({
     fullName: "",

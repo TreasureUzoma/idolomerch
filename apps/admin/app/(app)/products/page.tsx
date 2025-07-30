@@ -13,28 +13,25 @@ interface Product {
 }
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<Product[] | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const url = `${baseUrl}/products${search && `?search=${search}`}`;
-    fetch(url, {
-      credentials: "include",
-    })
+    const url = `${baseUrl}/products${search ? `?search=${encodeURIComponent(search)}` : ""}`;
+    fetch(url, { credentials: "include" })
       .then((res) => res.json())
       .then(setProducts)
+      .catch(() => setProducts([])) // TODO: Handle fetch errors properly
       .finally(() => setLoading(false));
   }, [search]);
 
   const handleDelete = async (id: string) => {
-    const confirm = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
+    const confirm = window.confirm("Are you sure you want to delete this product?");
     if (!confirm) return;
 
     const res = await fetch(`${baseUrl}/delete-product/${id}`, {
-      method: "delete",
+      method: "DELETE",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
@@ -42,7 +39,7 @@ export default function ProductsPage() {
     });
 
     if (res.ok) {
-      setProducts(products.filter((p) => p.id !== id));
+      setProducts((prev) => prev?.filter((p) => p.id !== id) || []);
     } else {
       alert("Failed to delete product.");
     }
@@ -62,7 +59,7 @@ export default function ProductsPage() {
 
       {loading ? (
         <p>Loading...</p>
-      ) : products.length === 0 ? (
+      ) : !products || products.length === 0 ? (
         <p>No products found.</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
