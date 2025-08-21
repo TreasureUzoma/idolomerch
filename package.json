@@ -1,6 +1,7 @@
 {
   "name": "idolomerch",
   "private": true,
+  "packageManager": "pnpm@10.14.0",
   "scripts": {
     "dev": "turbo dev",
     "build": "turbo build",
