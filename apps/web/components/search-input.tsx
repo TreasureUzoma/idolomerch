@@ -18,18 +18,18 @@ export const SearchInput = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (typeof value === "string" && value.trim()) {
-      onSearch();
+      onSearch(value);
     }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="relative w-full max-w-sm md:max-w-3xl"
+      className="relative w-full max-w-sm md:max-w-3xl bg-white rounded-lg"
     >
       <button
         type="submit"
-        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 p-2 bg-gray-100 bg-opacity-20 rounded-md"
+        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 p-2 bg-gray-100/20 rounded-md"
       >
         <Search size={21} />
       </button>

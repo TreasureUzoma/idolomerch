@@ -65,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
 
           <button
             onClick={handleAdd}
-            className="md:hidden shrink-0 text-primary bg-primary bg-opacity-10 rounded-full w-[2.125rem] h-[2.125rem] flex items-center justify-center hover:bg-primary hover:text-white transition"
+            className="md:hidden shrink-0 text-primary bg-primary/10 rounded-full w-[2.125rem] h-[2.125rem] flex items-center justify-center hover:bg-primary hover:text-white transition"
             aria-label="Add to Cart"
           >
             {added ? <Check className="w-4 h-4" /> : <Plus className="w-4 h-4" />}

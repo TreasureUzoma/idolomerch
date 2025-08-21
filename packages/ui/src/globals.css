@@ -1,11 +1,31 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
+@custom-variant dark (&:is(.dark *));
 :root {
   --color-primary: #34afcb;
-  --color-background: #ffffff;
+  --color-background: #572525;
   --color-foreground: #000000;
+}
+
+@theme {
+  --color-myColor: #a16207;
+  --color-primary: #1D687B;
+  --color-background: #1D687B;
+
+  --container-padding: 2rem;
+  --container-2xl: 1400px;
+
+  @keyframes accordion-down {
+    from { height: 0 }
+    to { height: var(--radix-accordion-content-height) }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height) }
+    to { height: 0 }
+  }
+
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
 }
 
 body {
