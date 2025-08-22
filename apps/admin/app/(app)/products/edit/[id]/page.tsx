@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { baseUrl } from "@/constants";
-import ProductForm from "@/components/ProductForm";
+import ProductForm from "@/components/product-form";
 
 export default function EditProductPage() {
   const { id } = useParams();

@@ -6,8 +6,8 @@ import { SimilarProducts } from "@/components/similar-products";
 import { Product } from "@repo/ui/types/product";
 import { baseUrl } from "@/constants";
 
-type Props = {
-  params: { id: string };
+type Params = {
+  id: string;
 };
 
 async function getProduct(id: string): Promise<Product | null> {
@@ -38,8 +38,13 @@ async function getAllProducts(): Promise<Product[]> {
   }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await getProduct(params.id);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<Params>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
     return {
@@ -57,8 +62,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Page({ params }: Props) {
-  const product = await getProduct(params.id);
+export default async function Page({
+  params,
+}: {
+  params: Promise<Params>;
+}) {
+  const { id } = await params;
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();

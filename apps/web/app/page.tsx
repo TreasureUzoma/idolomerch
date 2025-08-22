@@ -6,9 +6,11 @@ import { ServerWaker } from "@/components/server-waker";
 export default async function Home({
   searchParams,
 }: {
-  searchParams: { search?: string };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const search = searchParams.search || "";
+  const params = await searchParams;
+  const rawSearch = params.search;
+  const search = typeof rawSearch === "string" ? rawSearch : "";
 
   let products = [];
 
@@ -17,7 +19,6 @@ export default async function Home({
       ? `${baseUrl}/products?search=${encodeURIComponent(search)}`
       : `${baseUrl}/products`;
     const res = await fetch(url);
-    console.log(res);
 
     if (!res.ok) throw new Error("Failed to fetch products");
     products = await res.json();
