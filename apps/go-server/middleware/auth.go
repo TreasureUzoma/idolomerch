@@ -8,6 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
+	"github.com/treasureuzoma/idolomerch-api/handlers"
+	"github.com/treasureuzoma/idolomerch-api/utils"
 )
 
 func JWTMiddleware() fiber.Handler {
@@ -43,58 +45,18 @@ func JWTMiddleware() fiber.Handler {
 
 		// no valid access token, try refresh token
 		if refreshToken != "" {
-			token, err := jwt.Parse(refreshToken, func(t *jwt.Token) (interface{}, error) {
-				return jwtSecret, nil
-			})
-			if err != nil || !token.Valid {
+			claims, err := parseJWT(refreshToken)
+			if err != nil {
 				return c.Status(401).JSON(fiber.Map{"error": "Invalid refresh token"})
 			}
+			email := claims["email"].(string)
 
-			claims, ok := token.Claims.(jwt.MapClaims)
-			if !ok {
-				return c.Status(401).JSON(fiber.Map{"error": "Invalid refresh token claims"})
-			}
+			newAccess, _ := handlers.GenerateToken(email, 15*time.Minute)
+			newRefresh, _ := handlers.GenerateToken(email, 7*24*time.Hour)
 
-			email, ok := claims["email"].(string)
-			if !ok {
-				return c.Status(401).JSON(fiber.Map{"error": "Invalid refresh token email"})
-			}
-
-			// generate new access token
-			newAccess := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"email": email,
-				"exp":   time.Now().Add(time.Minute * 15).Unix(), 
-			})
-
-			newAccessStr, err := newAccess.SignedString(jwtSecret)
-			if err != nil {
-				return c.Status(500).JSON(fiber.Map{"error": "Could not create new access token"})
-			}
-
-			// rotate refresh token
-			newRefresh := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-				"email": email,
-				"exp":   time.Now().Add(time.Hour * 24 * 7).Unix(), // 7 days
-			})
-			newRefreshStr, _ := newRefresh.SignedString(jwtSecret)
-
-			// set cookies again
-			c.Cookie(&fiber.Cookie{
-				Name:     "access_token",
-				Value:    newAccessStr,
-				HTTPOnly: true,
-				Secure:   true,
-				Path:     "/",
-				Expires:  time.Now().Add(time.Minute * 15),
-			})
-			c.Cookie(&fiber.Cookie{
-				Name:     "refresh_token",
-				Value:    newRefreshStr,
-				HTTPOnly: true,
-				Secure:   true,
-				Path:     "/",
-				Expires:  time.Now().Add(time.Hour * 24 * 7),
-			})
+			// use helper
+			utils.SetCookie(c, "access_token", newAccess, 15*time.Minute)
+			utils.SetCookie(c, "refresh_token", newRefresh, 7*24*time.Hour)
 
 			c.Locals("user", email)
 			return c.Next()
@@ -102,4 +64,20 @@ func JWTMiddleware() fiber.Handler {
 
 		return c.Status(401).JSON(fiber.Map{"error": "Unauthorized"})
 	}
+}
+
+func parseJWT(tokenStr string) (map[string]interface{}, error) {
+	jwtSecret := []byte(os.Getenv("JWT_SECRET"))
+	token, err := jwt.Parse(tokenStr, func(t *jwt.Token) (interface{}, error) {
+		return jwtSecret, nil
+	})
+	if err != nil || !token.Valid {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return nil, err
+	}
+	return claims, nil
 }

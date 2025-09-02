@@ -9,15 +9,14 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/joho/godotenv"
+	"github.com/treasureuzoma/idolomerch-api/utils"
 )
-
 
 type LoginInput struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Test     bool   `json:"test"`
 }
-
 
 func init() {
 	if err := godotenv.Load(); err != nil {
@@ -35,38 +34,17 @@ func Login(c *fiber.Ctx) error {
 		return c.Status(401).JSON(fiber.Map{"error": "Invalid credentials"})
 	}
 
-	accessToken, err := generateToken(input.Email, 15*time.Minute)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Access token failed"})
-	}
+	accessToken, _ := GenerateToken(input.Email, 15*time.Minute)
+	refreshToken, _ := GenerateToken(input.Email, 7*24*time.Hour)
 
-	refreshToken, err := generateToken(input.Email, 7*24*time.Hour)
-	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "Refresh token failed"})
-	}
-
-	// Set cookies
-	c.Cookie(&fiber.Cookie{
-		Name:     "access_token",
-		Value:    accessToken,
-		Expires:  time.Now().Add(15 * time.Minute),
-		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Lax",
-	})
-	c.Cookie(&fiber.Cookie{
-		Name:     "refresh_token",
-		Value:    refreshToken,
-		Expires:  time.Now().Add(7 * 24 * time.Hour),
-		HTTPOnly: true,
-		Secure:   true,
-		SameSite: "Lax",
-	})
+	// set cookies using helper
+	utils.SetCookie(c, "access_token", accessToken, 15*time.Minute)
+	utils.SetCookie(c, "refresh_token", refreshToken, 7*24*time.Hour)
 
 	return c.JSON(fiber.Map{"message": "Login successful"})
 }
 
-func generateToken(email string, duration time.Duration) (string, error) {
+func GenerateToken(email string, duration time.Duration) (string, error) {
 	claims := jwt.MapClaims{
 		"email": email,
 		"exp":   time.Now().Add(duration).Unix(),
@@ -107,7 +85,7 @@ func RefreshToken(c *fiber.Ctx) error {
 	claims := token.Claims.(jwt.MapClaims)
 	email := claims["email"].(string)
 
-	newAccess, err := generateToken(email, 15*time.Minute)
+	newAccess, err := GenerateToken(email, 15*time.Minute)
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": "Failed to generate new access token"})
 	}
@@ -124,7 +102,6 @@ func RefreshToken(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Token refreshed"})
 }
 
-
 func Me(c *fiber.Ctx) error {
 	user := c.Locals("user")
 	if user == nil {
@@ -132,4 +109,3 @@ func Me(c *fiber.Ctx) error {
 	}
 	return c.JSON(fiber.Map{"user": user})
 }
-
