@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Trash2, Minus, Plus } from "lucide-react";
 import { useCart } from "@/context/cart";
-import { toast } from "@repo/ui/components/ui/sonner";
+import { toast } from "sonner";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";

@@ -6,7 +6,7 @@ import { useCart } from "@/context/cart";
 import { useCurrency } from "@/context/currency";
 import { convertCurrency } from "@repo/ui/lib/currency";
 import { formatCurrency } from "@repo/ui/lib/format-currency";
-import { toast } from "@repo/ui/components/ui/sonner";
+import { toast } from "sonner";
 import { Input } from "@repo/ui/components/ui/input";
 import { Label } from "@repo/ui/components/ui/label";
 import { CheckCircle } from "lucide-react";

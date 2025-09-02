@@ -5,7 +5,7 @@ import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { Home, Package, PlusSquare, LogOut } from "lucide-react";
 import type { ReactNode } from "react";
-import { toast } from "@repo/ui/components/ui/sonner";
+import { toast } from "sonner";
 import { baseUrl } from "@/constants";
 
 const navItems = [

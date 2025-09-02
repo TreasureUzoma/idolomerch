@@ -27,7 +27,6 @@ export default function RootLayout({
         />
       </head>
       <body className="font-sans">
-        <Toaster />
         <CurrencyProvider>
           <CartProvider>
             <Header />
@@ -35,6 +34,7 @@ export default function RootLayout({
             <Footer />
           </CartProvider>
         </CurrencyProvider>
+        <Toaster />
       </body>
     </html>
   );

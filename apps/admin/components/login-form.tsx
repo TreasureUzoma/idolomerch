@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "@repo/ui/components/ui/sonner";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { baseUrl } from "@/constants";
 
@@ -40,11 +40,11 @@ export const LoginForm = () => {
       }
 
       toast.success("Login successful");
-      alert("Login Successful");
+      // alert("Login Successful");
       router.push("/");
     } catch (err: any) {
       toast.error(err.message || "Something went wrong");
-      alert(err.message || "Something went wrong");
+      // alert(err.message || "Something went wrong");
     } finally {
       setLoading(false);
     }
