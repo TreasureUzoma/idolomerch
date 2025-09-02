@@ -2,6 +2,7 @@
 
 import { baseUrl } from "@/constants";
 import ProductForm from "@/components/product-form";
+import { toast } from "sonner";
 
 export default function CreateProductPage() {
   const handleCreate = async (data: any) => {
@@ -16,9 +17,9 @@ export default function CreateProductPage() {
 
     const result = await res.json();
     if (res.ok) {
-      alert("Product created!");
+      toast("Project created successfully!")
     } else {
-      alert(result.error || "Failed to create product");
+      toast.error(result.error || "Failed to create product");
     }
   };
 

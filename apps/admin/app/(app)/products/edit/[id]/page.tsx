@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { baseUrl } from "@/constants";
 import ProductForm from "@/components/product-form";
+import { toast } from "sonner";
 
 export default function EditProductPage() {
   const { id } = useParams();
@@ -29,9 +30,9 @@ export default function EditProductPage() {
 
     const result = await res.json();
     if (res.ok) {
-      alert("Product updated!");
+      toast("Product updated!");
     } else {
-      alert(result.error || "Failed to update");
+      toast.error(result.error || "Failed to update");
     }
   };
 

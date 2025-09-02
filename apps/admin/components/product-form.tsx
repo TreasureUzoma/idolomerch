@@ -118,11 +118,19 @@ export default function ProductForm({
                 />
                 <label htmlFor="main-image" className="cursor-pointer">
                   {form.mainImage ? (
-                    <img
-                      src={form.mainImage}
-                      alt="Main product"
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
+                    typeof form.mainImage === "string" ? (
+                      <img
+                        src={form.mainImage}
+                        alt="Main product"
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <img
+                        src={URL.createObjectURL(form.mainImage)}
+                        alt="Main product"
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    )
                   ) : (
                     <div className="py-8">
                       <div className="text-4xl text-gray-400 mb-2 w-full flex items-center justify-center">
@@ -225,7 +233,11 @@ export default function ProductForm({
                   />
                   {color.image && (
                     <img
-                      src={color.image}
+                      src={
+                        typeof color.image === "string"
+                          ? color.image
+                          : URL.createObjectURL(color.image)
+                      }
                       alt={color.name}
                       className="w-16 h-16 object-cover rounded-lg border"
                     />
@@ -285,8 +297,6 @@ const InputField = ({
       placeholder={placeholder}
       className="w-full px-4 py-3 border border-gray-300 rounded-lg"
     />
-    {helpText && (
-      <p className="text-xs text-gray-500 mt-1">{helpText}</p>
-    )}
+    {helpText && <p className="text-xs text-gray-500 mt-1">{helpText}</p>}
   </div>
 );
