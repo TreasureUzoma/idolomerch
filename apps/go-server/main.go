@@ -59,7 +59,7 @@ func main() {
 	// not jwt protected
 	api.Post("/monnify/webhook", handlers.MonnifyWebhook)
 
-	port := ":3001"
+	port := ":5000"
 	log.Printf("Server listening on %s", port)
 	log.Fatal(app.Listen(port))
 }
