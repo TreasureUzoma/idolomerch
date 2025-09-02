@@ -3,10 +3,11 @@ package handlers
 // TODO: delete image from cloudinary
 
 import (
-	// "fmt"
+	/* "fmt"
 	"net/url"
 	"path"
 	"strings"
+	*/
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/treasureuzoma/idolomerch-api/db"
@@ -49,7 +50,7 @@ func DeleteProduct(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{"message": "Product deleted successfully", "id": id})
 }
 
-func extractCloudinaryPublicID(imageURL string) (string, error) {
+/* func extractCloudinaryPublicID(imageURL string) (string, error) {
 	parsedURL, err := url.Parse(imageURL)
 	if err != nil {
 		return "", err
@@ -66,3 +67,5 @@ func extractCloudinaryPublicID(imageURL string) (string, error) {
 
 	return publicID, nil
 }
+
+*/

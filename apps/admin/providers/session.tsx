@@ -4,7 +4,6 @@ import { baseUrl } from "@/constants";
 import { useEffect, ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-const REFRESH_INTERVAL = 12 * 60 * 1000; // 12 minutes
 
 export function SessionsProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
@@ -41,11 +40,8 @@ export function SessionsProvider({ children }: { children: ReactNode }) {
       }
     };
 
-    refreshToken(); // refresh on mount
     checkSession(); // verify session on mount
 
-    const interval = setInterval(refreshToken, REFRESH_INTERVAL);
-    return () => clearInterval(interval);
   }, [router]);
 
   return <>{children}</>;
