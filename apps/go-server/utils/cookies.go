@@ -16,8 +16,8 @@ func SetCookie(c *fiber.Ctx, name, value string, duration time.Duration) {
 		Value:    value,
 		Expires:  time.Now().Add(duration),
 		HTTPOnly: true,
-		Secure:   secure,   // true in prod, false in dev
-		SameSite: "Lax", 
+		Secure:   secure, // true in prod, false in dev
+		SameSite: "None",
 		Path:     "/",
 	})
 }
@@ -29,7 +29,7 @@ func ClearCookie(c *fiber.Ctx, name string) {
 		Expires:  time.Now().Add(-1 * time.Hour),
 		HTTPOnly: true,
 		Secure:   os.Getenv("ENV") == "production",
-		SameSite: "Lax",
+		SameSite: "None",
 		Path:     "/",
 	})
 }

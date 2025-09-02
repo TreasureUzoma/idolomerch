@@ -61,7 +61,8 @@ func Logout(c *fiber.Ctx) error {
 			Expires:  time.Now().Add(-1 * time.Hour),
 			HTTPOnly: true,
 			Secure:   true,
-			SameSite: "Lax",
+			SameSite: "None",
+			Path:     "/",
 		})
 	}
 	clear("access_token")
@@ -96,7 +97,8 @@ func RefreshToken(c *fiber.Ctx) error {
 		Expires:  time.Now().Add(15 * time.Minute),
 		HTTPOnly: true,
 		Secure:   true,
-		SameSite: "Lax",
+		SameSite: "None",
+		Path:     "/",
 	})
 
 	return c.JSON(fiber.Map{"message": "Token refreshed"})
