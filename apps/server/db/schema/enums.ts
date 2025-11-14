@@ -34,15 +34,12 @@ export const visibilityEnum = pgEnum("visibility", [
 ]);
 
 export const productCategoryEnum = pgEnum("product_category", [
-  "electronics",
-  "clothing",
-  "home_appliances",
-  "books",
-  "toys",
-  "sports_equipment",
-  "beauty_products",
-  "automotive",
-  "groceries",
+  "hoodies",
+  "shirts",
+  "caps",
+  "stickers",
+  "posters",
+  "accessories",
 ]);
 
 export const orderStatusEnum = pgEnum("order_status", [
@@ -64,8 +61,7 @@ export const paymentStatusEnum = pgEnum("payment_status", [
 ]);
 
 export const paymentMethodEnum = pgEnum("payment_method", [
-  "credit_card",
-  "debit_card",
+  "card",
   "paypal",
   "bank_transfer",
   "cash_on_delivery",

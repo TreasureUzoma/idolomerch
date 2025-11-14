@@ -27,9 +27,7 @@ export const orders = pgTable("orders", {
   paymentStatus: paymentStatusEnum("payment_status")
     .notNull()
     .default("pending"),
-  paymentMethod: paymentMethodEnum("payment_method")
-    .notNull()
-    .default("credit_card"),
+  paymentMethod: paymentMethodEnum("payment_method").notNull().default("card"),
   shippingMethod: shippingMethodEnum("shipping_method")
     .notNull()
     .default("standard"),
