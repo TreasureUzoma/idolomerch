@@ -18,9 +18,7 @@ export const payments = pgTable("payments", {
     .references(() => orders.id, { onDelete: "cascade" }),
   amount: numeric("amount").notNull(),
   currency: currencyEnum("currency").notNull().default("USD"),
-  paymentMethod: paymentMethodEnum("payment_method")
-    .notNull()
-    .default("credit_card"),
+  paymentMethod: paymentMethodEnum("payment_method").notNull().default("card"),
   status: paymentStatusEnum("status").notNull().default("pending"),
   transactionId: text("transaction_id").notNull(),
 

@@ -1,142 +1,301 @@
-import type { ProductsParams } from "@workspace/validations";
+import type {
+  ProductsParams,
+  ProductUpdateInput,
+  ProductCreateInput,
+} from "@workspace/validations";
+import { and, desc, asc, eq, ilike, sql, or } from "drizzle-orm";
+import { currencyConverter } from "./currency-converter";
 import { products } from "../schema/products";
 import { db } from "..";
-import { and, desc, asc, eq, ilike, sql } from "drizzle-orm";
 import { paginate } from "../../utils/paginations";
-import { currencyConverter } from "../services/currency-converter";
 
-export const getAllProducts = async (params: ProductsParams) => {
-  const {
-    page = 1,
-    limit = 15,
-    search,
-    category,
-    sort = "newest",
-    currency = "USD",
-  } = params;
+const BASE_CURRENCY = "USD";
 
-  const offset = (page - 1) * limit;
+type ServiceResponse<T> = Promise<{
+  data?: T;
+  error?: string;
+  status: "success" | "error";
+}>;
 
-  const conditions = [
-    eq(products.status, "active"),
-    eq(products.visibility, "public"),
-  ];
+type ProductCategory = (typeof products.category.enumValues)[number];
 
-  if (search) conditions.push(ilike(products.name, `%${search}%`));
-  if (category) conditions.push(eq(products.category, category));
+export const createProduct = async (
+  body: ProductCreateInput
+): ServiceResponse<typeof products.$inferSelect> => {
+  try {
+    const {
+      price,
+      costPrice,
+      weight,
+      currency: sourceCurrency = BASE_CURRENCY,
+      category,
+      dropDate,
+      ...rest
+    } = body;
 
-  const orderBy =
-    sort === "price-asc"
-      ? asc(products.salePrice)
-      : sort === "price-desc"
-        ? desc(products.salePrice)
-        : desc(products.createdAt);
+    let finalSalePrice = Number(price);
+    let finalCostPrice = Number(costPrice);
 
-  const dbQuery = db
-    .select({
+    let finalDropDate: Date | undefined;
+
+    if (dropDate) {
+      if (dropDate instanceof Date) {
+        finalDropDate = dropDate;
+      } else if (typeof dropDate === "string") {
+        finalDropDate = new Date(dropDate);
+      }
+    }
+
+    if (sourceCurrency !== BASE_CURRENCY) {
+      const conversionRate = await currencyConverter.getRate(
+        sourceCurrency,
+        BASE_CURRENCY
+      );
+      finalSalePrice = finalSalePrice * conversionRate;
+      finalCostPrice = finalCostPrice * conversionRate;
+    }
+
+    const inserted = await db
+      .insert(products)
+      .values({
+        ...rest,
+        category: category as ProductCategory,
+        salePrice: finalSalePrice.toFixed(2),
+        costPrice: finalCostPrice.toFixed(2),
+        currency: BASE_CURRENCY,
+        status: "active",
+        dropDate: finalDropDate,
+        weight: weight !== undefined ? String(weight) : undefined,
+      })
+      .returning();
+
+    return { status: "success", data: inserted[0] };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to create product";
+    return { status: "error", error: message };
+  }
+};
+
+export const updateProduct = async (
+  id: string,
+  body: ProductUpdateInput
+): ServiceResponse<typeof products.$inferSelect> => {
+  try {
+    const {
+      price,
+      costPrice,
+      currency: sourceCurrency,
+      category,
+      dropDate,
+      weight,
+      ...rest
+    } = body;
+
+    let finalDropDate: Date | undefined;
+
+    if (dropDate) {
+      if (dropDate instanceof Date) {
+        finalDropDate = dropDate;
+      } else if (typeof dropDate === "string") {
+        finalDropDate = new Date(dropDate);
+      }
+    }
+
+    const updateData: Partial<typeof products.$inferInsert> = {
+      ...rest,
+      ...(category ? { category: category as ProductCategory } : {}),
+      ...(dropDate !== undefined ? { dropDate: finalDropDate } : {}),
+      ...(weight !== undefined ? { weight: String(weight) } : {}),
+    };
+
+    if (price !== undefined || costPrice !== undefined) {
+      let conversionRate = 1;
+      let currencyToUse = sourceCurrency || BASE_CURRENCY;
+
+      if (currencyToUse !== BASE_CURRENCY) {
+        conversionRate = await currencyConverter.getRate(
+          currencyToUse,
+          BASE_CURRENCY
+        );
+      }
+
+      if (price !== undefined) {
+        const finalSalePrice = Number(price) * conversionRate;
+        updateData.salePrice = finalSalePrice.toFixed(2);
+        updateData.currency = BASE_CURRENCY;
+      }
+      if (costPrice !== undefined) {
+        const finalCostPrice = Number(costPrice) * conversionRate;
+        updateData.costPrice = finalCostPrice.toFixed(2);
+        updateData.currency = BASE_CURRENCY;
+      }
+    }
+
+    const updated = await db
+      .update(products)
+      .set(updateData)
+      .where(eq(products.id, id))
+      .returning();
+
+    if (!updated || updated.length === 0) throw new Error("Product not found");
+
+    return { status: "success", data: updated[0] };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to update product";
+    return { status: "error", error: message };
+  }
+};
+
+export const deleteProduct = async (
+  id: string
+): ServiceResponse<{ id: string }> => {
+  try {
+    const deleted = await db
+      .delete(products)
+      .where(eq(products.id, id))
+      .returning({ id: products.id });
+
+    if (!deleted || deleted.length === 0) throw new Error("Product not found");
+
+    return { status: "success", data: deleted[0] };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to delete product";
+    return { status: "error", error: message };
+  }
+};
+
+export const getProducts = async (
+  params: ProductsParams,
+  lookup?: { id?: string; slug?: string; isAdmin?: boolean }
+): ServiceResponse<any> => {
+  try {
+    const {
+      page = 1,
+      limit = 15,
+      search,
+      category,
+      sort = "newest",
+      currency = BASE_CURRENCY,
+    } = params;
+
+    const isAdmin = lookup?.isAdmin || false;
+    const isSingleLookup = lookup && (lookup.id || lookup.slug);
+
+    const TARGET_CURRENCY = currency;
+    const offset = isSingleLookup ? 0 : (page - 1) * limit;
+    const finalLimit = isSingleLookup ? 1 : limit;
+
+    const baseSelect = {
+      id: products.id,
       name: products.name,
-      createdAt: products.createdAt,
-      updatedAt: products.updatedAt,
+      slug: products.slug,
       price: products.salePrice,
       discount: products.discountPercentage,
       stockQuantity: products.stockQuantity,
-      slug: products.slug,
       shortDescription: products.shortDescription,
       currency: products.currency,
-    })
-    .from(products)
-    .where(and(...conditions))
-    .orderBy(orderBy)
-    .limit(limit)
-    .offset(offset);
+      createdAt: products.createdAt,
+      updatedAt: products.updatedAt,
+    };
 
-  const countQuery = db
-    .select({ count: sql<number>`count(*)` })
-    .from(products)
-    .where(and(...conditions));
+    const adminSelect = {
+      ...baseSelect,
+      description: products.description,
+      costPrice: products.costPrice,
+      sku: products.sku,
+      barcode: products.barcode,
+      status: products.status,
+      visibility: products.visibility,
+      inventoryTracking: products.inventoryTracking,
+      lowStockThreshold: products.lowStockThreshold,
+      dropDate: products.dropDate,
+      weight: products.weight,
+    };
 
-  const result = await paginate(dbQuery, countQuery, page, limit);
+    const selectFields = isAdmin ? adminSelect : baseSelect;
 
-  if (!result.data) result.data = [];
+    const conditions = [];
 
-  const BASE_CURRENCY = "USD";
-  const TARGET_CURRENCY = currency;
+    if (!isAdmin) {
+      conditions.push(eq(products.status, "active"));
+      conditions.push(eq(products.visibility, "public"));
+    }
 
-  if (TARGET_CURRENCY !== BASE_CURRENCY) {
-    const conversionRate = await currencyConverter.getRate(
-      BASE_CURRENCY,
-      TARGET_CURRENCY
-    );
+    if (lookup?.id || lookup?.slug) {
+      const lookupConditions = [];
+      if (lookup.id) lookupConditions.push(eq(products.id, lookup.id));
+      if (lookup.slug) lookupConditions.push(eq(products.slug, lookup.slug));
+      conditions.push(or(...lookupConditions));
+    } else {
+      if (search) conditions.push(ilike(products.name, `%${search}%`));
+      if (category)
+        conditions.push(eq(products.category, category as ProductCategory));
+    }
 
-    result.data = result.data.map((p: any) => ({
-      ...p,
-      price: p.price ? (Number(p.price) * conversionRate).toFixed(2) : p.price,
-      currency: TARGET_CURRENCY,
-    }));
-  }
+    const orderBy =
+      sort === "price-asc"
+        ? asc(products.salePrice)
+        : sort === "price-desc"
+          ? desc(products.salePrice)
+          : desc(products.createdAt);
 
-  return result;
-};
+    const finalConditions =
+      conditions.length > 0 ? and(...conditions) : undefined;
 
-export const getProductBySlugOrId = async (payload: {
-  slug?: string;
-  id?: string;
-  currency: string;
-}) => {
-  const { slug, id, currency } = payload;
-
-  if (!slug && !id) throw new Error("Product slug or ID is required");
-
-  let product: any | null = null;
-
-  const selectFields = {
-    id: products.id,
-    name: products.name,
-    slug: products.slug,
-    price: products.salePrice,
-    discount: products.discountPercentage,
-    stockQuantity: products.stockQuantity,
-    shortDescription: products.shortDescription,
-    currency: products.currency,
-    createdAt: products.createdAt,
-    updatedAt: products.updatedAt,
-  };
-
-  if (slug) {
-    product = await db
+    const dbQuery = db
       .select(selectFields)
       .from(products)
-      .where(eq(products.slug, slug))
-      .limit(1)
-      .then((res) => res[0] || null);
-  } else if (id) {
-    product = await db
-      .select(selectFields)
+      .where(finalConditions)
+      .orderBy(orderBy)
+      .limit(finalLimit)
+      .offset(offset);
+
+    const countQuery = db
+      .select({ count: sql<number>`count(*)` })
       .from(products)
-      .where(eq(products.id, id))
-      .limit(1)
-      .then((res) => res[0] || null);
+      .where(finalConditions);
+
+    const result = await paginate(dbQuery, countQuery, page, finalLimit);
+    let productData = result.data || [];
+
+    if (isSingleLookup && productData.length === 0) {
+      throw new Error("Product not found");
+    }
+
+    if (TARGET_CURRENCY !== BASE_CURRENCY && productData.length > 0) {
+      const conversionRate = await currencyConverter.getRate(
+        BASE_CURRENCY,
+        TARGET_CURRENCY
+      );
+
+      productData = productData.map((p: any) => {
+        let finalPrice = p.price;
+        if (p.price) {
+          finalPrice = (Number(p.price) * conversionRate).toFixed(2);
+        }
+        return {
+          ...p,
+          price: finalPrice,
+          currency: TARGET_CURRENCY,
+        };
+      });
+    } else if (productData.length > 0) {
+      productData = productData.map((p: any) => ({
+        ...p,
+        price: p.price ? Number(p.price).toFixed(2) : p.price,
+        currency: BASE_CURRENCY,
+      }));
+    }
+
+    if (isSingleLookup) {
+      return { status: "success", data: productData[0] };
+    }
+
+    result.data = productData;
+    return { status: "success", data: result };
+  } catch (e) {
+    const message =
+      e instanceof Error ? e.message : "Failed to retrieve products";
+    return { status: "error", error: message };
   }
-
-  if (!product) throw new Error("Product not found");
-
-  const SOURCE_CURRENCY = product.currency || "USD";
-  const TARGET_CURRENCY = currency;
-
-  if (TARGET_CURRENCY !== SOURCE_CURRENCY) {
-    const conversionRate = await currencyConverter.getRate(
-      SOURCE_CURRENCY,
-      TARGET_CURRENCY
-    );
-
-    product.price = product.price
-      ? (Number(product.price) * conversionRate).toFixed(2)
-      : product.price;
-
-    product.currency = TARGET_CURRENCY;
-  } else if (product.price) {
-    product.price = Number(product.price).toFixed(2);
-  }
-
-  return { data: [product] };
 };

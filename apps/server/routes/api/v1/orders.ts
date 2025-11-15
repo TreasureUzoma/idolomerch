@@ -17,13 +17,7 @@ orderRoutes.post(
     try {
       const newOrder = await createOrder(body);
 
-      return c.json(
-        {
-          message: "Order created successfully",
-          order: newOrder,
-        },
-        201
-      );
+      return c.json(newOrder, 201);
     } catch (error) {
       console.error("Error creating order:", error);
 

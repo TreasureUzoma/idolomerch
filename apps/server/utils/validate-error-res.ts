@@ -5,7 +5,7 @@ export const validationErrorResponse = (c: Context, error: ZodError) => {
   const message = error.errors.map((err) => err.message).join(", ");
   return c.json(
     {
-      success: false,
+      status: "error",
       message,
       data: null,
     },

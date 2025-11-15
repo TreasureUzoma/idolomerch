@@ -1,7 +1,7 @@
 CREATE TYPE "public"."currency" AS ENUM('USD', 'EUR');--> statement-breakpoint
 CREATE TYPE "public"."fulfillment_status" AS ENUM('unfulfilled', 'fulfilled', 'partially_fulfilled', 'cancelled', 'returned');--> statement-breakpoint
 CREATE TYPE "public"."order_status" AS ENUM('pending', 'processing', 'shipped', 'delivered', 'cancelled', 'returned', 'refunded');--> statement-breakpoint
-CREATE TYPE "public"."payment_method" AS ENUM('credit_card', 'debit_card', 'paypal', 'bank_transfer', 'cash_on_delivery', 'btc', 'usdt', 'usdc', 'sol');--> statement-breakpoint
+CREATE TYPE "public"."payment_method" AS ENUM('card', 'paypal', 'bank_transfer', 'cash_on_delivery', 'btc', 'usdt', 'usdc', 'sol');--> statement-breakpoint
 CREATE TYPE "public"."payment_status" AS ENUM('pending', 'paid', 'failed', 'refunded', 'partially_refunded');--> statement-breakpoint
 CREATE TYPE "public"."product_category" AS ENUM('hoodies', 'shirts', 'caps', 'stickers', 'posters', 'accessories');--> statement-breakpoint
 CREATE TYPE "public"."product_status" AS ENUM('active', 'discontinued', 'archived', 'draft');--> statement-breakpoint
@@ -16,7 +16,7 @@ CREATE TABLE "orders" (
 	"order_number" text NOT NULL,
 	"status" "order_status" DEFAULT 'pending' NOT NULL,
 	"payment_status" "payment_status" DEFAULT 'pending' NOT NULL,
-	"payment_method" "payment_method" DEFAULT 'credit_card' NOT NULL,
+	"payment_method" "payment_method" DEFAULT 'card' NOT NULL,
 	"shipping_method" "shipping_method" DEFAULT 'standard' NOT NULL,
 	"currency" "currency" DEFAULT 'USD' NOT NULL,
 	"subtotal" numeric(12, 2) NOT NULL,
@@ -41,7 +41,7 @@ CREATE TABLE "payments" (
 	"order_id" uuid NOT NULL,
 	"amount" numeric NOT NULL,
 	"currency" "currency" DEFAULT 'USD' NOT NULL,
-	"payment_method" "payment_method" DEFAULT 'credit_card' NOT NULL,
+	"payment_method" "payment_method" DEFAULT 'card' NOT NULL,
 	"status" "payment_status" DEFAULT 'pending' NOT NULL,
 	"transaction_id" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -87,6 +87,18 @@ CREATE TABLE "products" (
 	CONSTRAINT "products_sku_unique" UNIQUE("sku")
 );
 --> statement-breakpoint
+CREATE TABLE "refresh_tokens" (
+	"serial" serial PRIMARY KEY NOT NULL,
+	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
+	"user_id" uuid NOT NULL,
+	"token" text NOT NULL,
+	"expires_at" timestamp NOT NULL,
+	"revoked" boolean DEFAULT false NOT NULL,
+	"user_agent" text NOT NULL,
+	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "refresh_tokens_id_unique" UNIQUE("id")
+);
+--> statement-breakpoint
 CREATE TABLE "users" (
 	"serial" serial PRIMARY KEY NOT NULL,
 	"id" uuid DEFAULT gen_random_uuid() NOT NULL,
@@ -104,4 +116,6 @@ CREATE TABLE "users" (
 );
 --> statement-breakpoint
 ALTER TABLE "orders" ADD CONSTRAINT "orders_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
-ALTER TABLE "payments" ADD CONSTRAINT "payments_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;
+ALTER TABLE "payments" ADD CONSTRAINT "payments_order_id_orders_id_fk" FOREIGN KEY ("order_id") REFERENCES "public"."orders"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+ALTER TABLE "refresh_tokens" ADD CONSTRAINT "refresh_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "public"."users"("id") ON DELETE cascade ON UPDATE no action;--> statement-breakpoint
+CREATE INDEX "refresh_tokens_user_idx" ON "refresh_tokens" USING btree ("user_id");

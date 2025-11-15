@@ -11,6 +11,9 @@ const envSchema = z.object({
   ENCRYPTION_KEY: z.string(),
   EXCHANGE_RATE_API_KEY: z.string(),
   REDIS_URL: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
 });
 
 export const envConfig = envSchema.parse(process.env);
