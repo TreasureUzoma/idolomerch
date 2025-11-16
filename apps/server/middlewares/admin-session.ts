@@ -42,10 +42,10 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
       try {
         const decoded = (await verify(
           accessToken,
-          envConfig.JWT_ACCESS_SECRET!
+          envConfig.JWT_ACCESS_SECRET
         )) as { id: string; email: string; name?: string; role: Role };
         if (decoded.role === "superadmin") {
-          return c.json({ message: "Unauthorized", success: false }, 403);
+          return c.json({ message: "Unauthorized", status: "error" }, 403);
         }
 
         // Inject user into context
@@ -63,7 +63,7 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
       "idoloMerchRefreshToken"
     );
     if (!refreshToken)
-      return c.json({ message: "Unauthorized", success: false }, 401);
+      return c.json({ message: "Unauthorized", status: "error" }, 401);
 
     let decodedRefresh: { id: string };
     try {
@@ -72,7 +72,7 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
         envConfig.JWT_REFRESH_SECRET
       )) as { id: string };
     } catch {
-      return c.json({ message: "Unauthorized", success: false }, 401);
+      return c.json({ message: "Unauthorized", status: "error" }, 401);
     }
 
     const [tokenRecord] = await db
@@ -82,7 +82,7 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
       .limit(1);
 
     if (!tokenRecord || tokenRecord.revoked) {
-      return c.json({ message: "Unauthorized", success: false }, 401);
+      return c.json({ message: "Unauthorized", status: "error" }, 401);
     }
 
     const [user] = await db
@@ -91,9 +91,9 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
       .where(eq(users.id, decodedRefresh.id))
       .limit(1);
 
-    if (!user) return c.json({ message: "Unauthorized", success: false }, 401);
-    if (user.role === "superadmin") {
-      return c.json({ message: "Unauthorized", success: false }, 403);
+    if (!user) return c.json({ message: "Unauthorized", status: "error" }, 401);
+    if (user.role !== "superadmin") {
+      return c.json({ message: "Unauthorized", status: "error" }, 403);
     }
 
     const {
@@ -143,9 +143,8 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
     });
     return await next();
   } catch (err) {
-    console.error("Auth middleware error:", err);
     return c.json(
-      { message: "Unauthorized (middleware)", success: false },
+      { message: "Unauthorized (middleware)", status: "error" },
       401
     );
   }

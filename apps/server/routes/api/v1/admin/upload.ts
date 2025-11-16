@@ -64,7 +64,7 @@ uploadRoutes.post("/", async (c) => {
   }
 });
 
-uploadRoutes.post("/upload-multiple", async (c) => {
+uploadRoutes.post("/multiple", async (c) => {
   try {
     const body = await c.req.parseBody();
 

@@ -63,11 +63,17 @@ const handleAuth = async (
   );
 };
 
-adminAuthRoutes.post("/login", zValidator("json", loginSchema), async (c) => {
-  const body = c.req.valid("json");
-  const resolvedData = await login(body);
-  return handleAuth(c, Promise.resolve(resolvedData));
-});
+adminAuthRoutes.post(
+  "/login",
+  zValidator("json", loginSchema, (result, c) => {
+    if (!result.success) return validationErrorResponse(c, result.error);
+  }),
+  async (c) => {
+    const body = c.req.valid("json");
+    const resolvedData = await login(body);
+    return handleAuth(c, Promise.resolve(resolvedData));
+  }
+);
 
 /*
 // uncomment when u want to create an admin

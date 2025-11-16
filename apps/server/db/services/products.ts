@@ -187,6 +187,7 @@ export const getProducts = async (
 
     const baseSelect = {
       id: products.id,
+      mainImage: products.mainImage,
       name: products.name,
       slug: products.slug,
       price: products.salePrice,

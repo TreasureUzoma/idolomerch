@@ -3,6 +3,7 @@ import "dotenv/config";
 
 const envSchema = z.object({
   APP_URL: z.string(),
+  ADMIN_APP_URL: z.string(),
   DB_URL: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   JWT_ACCESS_SECRET: z.string(),

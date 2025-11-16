@@ -75,7 +75,7 @@ The API is versioned under `/api/v1`. Here are some of the key endpoints:
 - **`PUT /api/v1/admin/orders/:id`**: Update an existing order (e.g., status, payment status).
 - **`DELETE /api/v1/admin/orders/:id`**: Delete an order.
 - **`POST /api/v1/admin/upload`**: Upload a single image to Cloudinary.
-- **`POST /api/v1/admin/upload-multiple`**: Upload multiple images to Cloudinary.
+- **`POST /api/v1/admin/upload/multiple`**: Upload multiple images to Cloudinary.
 - **`DELETE /api/v1/admin/upload/delete`**: Delete an image from Cloudinary using its public ID.
 
 ## Contributing
