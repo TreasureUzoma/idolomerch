@@ -37,6 +37,7 @@ import {
   CustomGalleryImagesInput,
 } from "./custom-image-upload";
 import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
+import { CATEGORIES, cleanNullValues } from "@/lib/utils";
 
 type ProductFormProps = {
   mode: "create" | "update";
@@ -44,47 +45,6 @@ type ProductFormProps = {
   onSubmitForm?: (data: ProductCreateInput | ProductUpdateInput) => void;
   isDataLoading?: boolean;
   id?: string;
-};
-
-const CATEGORIES = [
-  "hoodies",
-  "shirts",
-  "caps",
-  "stickers",
-  "posters",
-  "accessories",
-] as const;
-
-const cleanNullValues = (obj: any): any => {
-  if (obj === null || typeof obj !== "object") {
-    return obj;
-  }
-
-  if (Array.isArray(obj)) {
-    return obj
-      .map(cleanNullValues)
-      .filter((val) => val !== undefined && val !== null);
-  }
-
-  const cleaned = {} as any;
-  for (const key in obj) {
-    const value = obj[key];
-    let cleanedValue;
-
-    if (value === null) {
-      cleanedValue = undefined;
-    } else if (typeof value === "object" && value !== null) {
-      cleanedValue = cleanNullValues(value);
-    } else {
-      cleanedValue = value;
-    }
-
-    if (cleanedValue !== undefined) {
-      cleaned[key] = cleanedValue;
-    }
-  }
-
-  return cleaned;
 };
 
 export function ProductForm({
