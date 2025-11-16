@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   useForm,
@@ -36,12 +36,14 @@ import {
   CustomImageInput,
   CustomGalleryImagesInput,
 } from "./custom-image-upload";
-import { useCreateProduct } from "@/hooks/use-products";
+import { useCreateProduct, useUpdateProduct } from "@/hooks/use-products";
 
 type ProductFormProps = {
   mode: "create" | "update";
-  defaultValues?: ProductCreateInput | ProductUpdateInput;
+  defaultValues?: ProductCreateInput | ProductUpdateInput | undefined;
   onSubmitForm?: (data: ProductCreateInput | ProductUpdateInput) => void;
+  isDataLoading?: boolean;
+  id?: string;
 };
 
 const CATEGORIES = [
@@ -53,32 +55,106 @@ const CATEGORIES = [
   "accessories",
 ] as const;
 
+const cleanNullValues = (obj: any): any => {
+  if (obj === null || typeof obj !== "object") {
+    return obj;
+  }
+
+  if (Array.isArray(obj)) {
+    return obj
+      .map(cleanNullValues)
+      .filter((val) => val !== undefined && val !== null);
+  }
+
+  const cleaned = {} as any;
+  for (const key in obj) {
+    const value = obj[key];
+    let cleanedValue;
+
+    if (value === null) {
+      cleanedValue = undefined;
+    } else if (typeof value === "object" && value !== null) {
+      cleanedValue = cleanNullValues(value);
+    } else {
+      cleanedValue = value;
+    }
+
+    if (cleanedValue !== undefined) {
+      cleaned[key] = cleanedValue;
+    }
+  }
+
+  return cleaned;
+};
+
 export function ProductForm({
   mode,
   defaultValues,
   onSubmitForm,
+  isDataLoading,
+  id,
 }: ProductFormProps) {
   const isCreate = mode === "create";
+
   const { mutate: createProduct, isPending: isCreatingProduct } =
     useCreateProduct();
+  const { mutate: updateProduct, isPending: isUpdatingProduct } =
+    useUpdateProduct();
 
   type FormValues = ProductCreateInput | ProductUpdateInput;
+
+  const cleanedDefaultValues = defaultValues
+    ? cleanNullValues(defaultValues)
+    : {};
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(
       isCreate ? productCreateSchema : productUpdateSchema
     ) as Resolver<FormValues>,
     defaultValues: {
-      ...defaultValues,
+      ...cleanedDefaultValues,
     } as unknown as FormValues,
   });
 
-  const { handleSubmit } = methods;
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = methods;
+
+  useEffect(() => {
+    if (defaultValues) {
+      const cleaned = cleanNullValues(defaultValues) as FormValues;
+      methods.reset(cleaned);
+    }
+  }, [defaultValues, methods]);
 
   const onSubmit: SubmitHandler<FormValues> = (data) => {
+    if (Object.keys(errors).length > 0) {
+      console.error("CLIENT-SIDE VALIDATION FAILED:");
+      Object.entries(errors).forEach(([key, error]) => {
+        console.error(`Field '${key}': ${error?.message}`);
+      });
+      return;
+    }
+
     onSubmitForm?.(data);
-    createProduct(data as ProductCreateInput);
+
+    if (isCreate) {
+      createProduct(data as ProductCreateInput);
+    } else {
+      if (!id) {
+        throw new Error("Error: Product ID is missing for update operation.");
+      }
+
+      updateProduct({
+        ...(data as ProductUpdateInput),
+        id,
+      } as ProductUpdateInput & { id: string });
+    }
   };
+
+  const isFormSubmitting = isCreatingProduct || isUpdatingProduct;
+  const isDisabled = isDataLoading || isFormSubmitting;
 
   return (
     <FormProvider {...methods}>
@@ -86,7 +162,7 @@ export function ProductForm({
         <div className="flex flex-col gap-2">
           <Label>Name</Label>
           <Input placeholder="Product name" {...methods.register("name")} />
-          <ErrorMessage message={methods.formState.errors.name?.message} />
+          <ErrorMessage message={errors.name?.message} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -95,7 +171,7 @@ export function ProductForm({
             placeholder="product-name-slug"
             {...methods.register("slug")}
           />
-          <ErrorMessage message={methods.formState.errors.slug?.message} />
+          <ErrorMessage message={errors.slug?.message} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -104,9 +180,7 @@ export function ProductForm({
             placeholder="A concise summary"
             {...methods.register("shortDescription")}
           />
-          <ErrorMessage
-            message={methods.formState.errors.shortDescription?.message}
-          />
+          <ErrorMessage message={errors.shortDescription?.message} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -115,9 +189,7 @@ export function ProductForm({
             placeholder="Detailed product description…"
             {...methods.register("description")}
           />
-          <ErrorMessage
-            message={methods.formState.errors.description?.message}
-          />
+          <ErrorMessage message={errors.description?.message} />
         </div>
 
         <div className="grid grid-cols-3 gap-4">
@@ -127,7 +199,7 @@ export function ProductForm({
               placeholder="Unique stock keeping unit"
               {...methods.register("sku")}
             />
-            <ErrorMessage message={methods.formState.errors.sku?.message} />
+            <ErrorMessage message={errors.sku?.message} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -150,9 +222,7 @@ export function ProductForm({
                 </Select>
               )}
             />
-            <ErrorMessage
-              message={methods.formState.errors.category?.message}
-            />
+            <ErrorMessage message={errors.category?.message} />
           </div>
 
           <CustomImageInput label="Main Image" name="mainImage" />
@@ -168,7 +238,7 @@ export function ProductForm({
               placeholder="0.00"
               {...methods.register("price")}
             />
-            <ErrorMessage message={methods.formState.errors.price?.message} />
+            <ErrorMessage message={errors.price?.message} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -178,9 +248,7 @@ export function ProductForm({
               placeholder="0.00"
               {...methods.register("costPrice")}
             />
-            <ErrorMessage
-              message={methods.formState.errors.costPrice?.message}
-            />
+            <ErrorMessage message={errors.costPrice?.message} />
           </div>
 
           <div className="flex flex-col gap-2">
@@ -194,15 +262,12 @@ export function ProductForm({
                     <SelectValue placeholder="Select currency" />
                   </SelectTrigger>
                   <SelectContent>
-                    {/* Currency option limited to USD only */}
                     <SelectItem value="USD">USD</SelectItem>
                   </SelectContent>
                 </Select>
               )}
             />
-            <ErrorMessage
-              message={methods.formState.errors.currency?.message}
-            />
+            <ErrorMessage message={errors.currency?.message} />
           </div>
         </div>
 
@@ -214,9 +279,7 @@ export function ProductForm({
               placeholder="0"
               {...methods.register("stockQuantity", { valueAsNumber: true })}
             />
-            <ErrorMessage
-              message={methods.formState.errors.stockQuantity?.message}
-            />
+            <ErrorMessage message={errors.stockQuantity?.message} />
           </div>
           <div className="flex flex-col gap-2">
             <Label>Discount (%)</Label>
@@ -227,9 +290,7 @@ export function ProductForm({
                 valueAsNumber: true,
               })}
             />
-            <ErrorMessage
-              message={methods.formState.errors.discountPercentage?.message}
-            />
+            <ErrorMessage message={errors.discountPercentage?.message} />
           </div>
           <div className="flex flex-col gap-2">
             <Label>Low Stock Threshold</Label>
@@ -240,13 +301,9 @@ export function ProductForm({
                 valueAsNumber: true,
               })}
             />
-            <ErrorMessage
-              message={methods.formState.errors.lowStockThreshold?.message}
-            />
+            <ErrorMessage message={errors.lowStockThreshold?.message} />
           </div>
         </div>
-
-        {/* The 'Tags' input section has been completely removed */}
 
         <div className="grid grid-cols-3 gap-6 pt-4">
           <div className="flex items-center gap-3">
@@ -309,7 +366,7 @@ export function ProductForm({
               </Select>
             )}
           />
-          <ErrorMessage message={methods.formState.errors.status?.message} />
+          <ErrorMessage message={errors.status?.message} />
         </div>
 
         <div className="flex flex-col gap-2">
@@ -331,13 +388,19 @@ export function ProductForm({
               </Select>
             )}
           />
-          <ErrorMessage
-            message={methods.formState.errors.visibility?.message}
-          />
+          <ErrorMessage message={errors.visibility?.message} />
         </div>
 
-        <Button type="submit" className="w-fit">
-          {isCreate ? "Create Product" : "Update Product"}
+        <Button type="submit" className="w-fit" disabled={isDisabled}>
+          {isDataLoading
+            ? "Loading Product..."
+            : isCreatingProduct
+              ? "Creating..."
+              : isUpdatingProduct
+                ? "Updating..."
+                : isCreate
+                  ? "Create Product"
+                  : "Update Product"}
         </Button>
       </form>
     </FormProvider>

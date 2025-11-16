@@ -2,6 +2,7 @@ import { Pagination } from "@/types";
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
 import api from "@workspace/axios";
@@ -13,13 +14,24 @@ interface Product {
   name: string;
   slug: string;
   mainImage: string;
-  price: string | null;
-  discount: number | null;
+  price: number;
+  discount: number;
   stockQuantity: number;
   shortDescription: string;
-  currency: "USD" | "EUR";
-  createdAt: Date;
-  updatedAt: Date;
+  currency: "USD";
+  createdAt: string;
+  updatedAt: string;
+
+  description?: string;
+  costPrice?: number;
+  sku?: string;
+  barcode?: string;
+  status?: "active" | "draft" | "archived";
+  visibility?: "public" | "private";
+  inventoryTracking?: boolean;
+  lowStockThreshold?: number;
+  dropDate?: string | null;
+  weight?: number | null;
 }
 
 interface ProductResponseData {
@@ -58,12 +70,13 @@ export const useCreateProduct = () => {
   });
 };
 
-export const useUpdateProduct = (id: string) => {
+export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (body: ProductUpdateInput) =>
-      api.put(`/admin/products/${id}`, body),
+    mutationFn: async (body: ProductUpdateInput & { id: string }) => {
+      return api.put(`/admin/products/${body.id}`, body);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"], exact: false });
       toast.success("Product updated successfully");
@@ -73,5 +86,16 @@ export const useUpdateProduct = (id: string) => {
         err instanceof Error ? err?.message : "Failed to update product"
       );
     },
+  });
+};
+
+export const useGetProductById = (id: string) => {
+  return useQuery<ProductUpdateInput>({
+    queryKey: ["products", id],
+    queryFn: async () => {
+      const { data: res } = await api(`/admin/products/${id}`);
+      return res.data;
+    },
+    enabled: !!id,
   });
 };

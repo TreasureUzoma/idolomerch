@@ -245,7 +245,23 @@ export const CustomMultiImageUpload: React.FC<CustomMultiImageUploadProps> = ({
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>(
     initialImageUrls?.map((url) => ({ url, publicId: "" })) || []
   );
+  useEffect(() => {
+    if (initialImageUrls) {
+      const initialFiles = initialImageUrls.map((url) => ({
+        url,
+        publicId: "",
+      }));
 
+      const currentUrls = uploadedFiles.map((f) => f.url).join(",");
+      const newUrls = initialImageUrls.join(",");
+
+      if (currentUrls !== newUrls) {
+        setUploadedFiles(initialFiles);
+      }
+    } else if (uploadedFiles.length > 0) {
+      setUploadedFiles([]);
+    }
+  }, [initialImageUrls]);
   const onUploadProgress = (progressEvent: AxiosProgressEvent) => {
     if (progressEvent.total) {
       const percentage = Math.round(

@@ -41,7 +41,7 @@ export default function ProductsPage() {
               </Link>
 
               <div className="flex items-center justify-start">
-                <div>edit</div>
+                <Link href={`/products/edit/${product.id}`}>edit</Link>
                 <div>delete</div>
               </div>
             </div>

@@ -188,15 +188,19 @@ export const getProducts = async (
     const baseSelect = {
       id: products.id,
       mainImage: products.mainImage,
+      galleryImages: products.galleryImages,
       name: products.name,
       slug: products.slug,
       price: products.salePrice,
-      discount: products.discountPercentage,
       stockQuantity: products.stockQuantity,
       shortDescription: products.shortDescription,
       currency: products.currency,
       createdAt: products.createdAt,
       updatedAt: products.updatedAt,
+      category: products.category,
+      discountPercentage: products.discountPercentage,
+      requiresShipping: products.requiresShipping,
+      isFeatured: products.isFeatured,
     };
 
     const adminSelect = {
@@ -272,7 +276,7 @@ export const getProducts = async (
       productData = productData.map((p: any) => {
         let finalPrice = p.price;
         if (p.price) {
-          finalPrice = (Number(p.price) * conversionRate).toFixed(2);
+          finalPrice = Math.round(Number(p.price) * conversionRate * 100) / 100;
         }
         return {
           ...p,
@@ -283,7 +287,7 @@ export const getProducts = async (
     } else if (productData.length > 0) {
       productData = productData.map((p: any) => ({
         ...p,
-        price: p.price ? Number(p.price).toFixed(2) : p.price,
+        price: p.price ? Number(p.price) : p.price,
         currency: BASE_CURRENCY,
       }));
     }

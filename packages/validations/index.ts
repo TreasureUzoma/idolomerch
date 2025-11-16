@@ -119,10 +119,7 @@ export const productCreateSchema = z.object({
   visibility: productVisibilityEnum.default("private"),
 });
 
-export const productUpdateSchema = productCreateSchema.partial().extend({
-  costPrice: numericString.optional(),
-  price: numericString.optional(),
-});
+export const productUpdateSchema = productCreateSchema.partial().extend({});
 
 export const productsParamsSchema = z.object({
   page: z
