@@ -7,6 +7,7 @@ import {
 } from "@tanstack/react-query";
 import api from "@workspace/axios";
 import { ProductCreateInput, ProductUpdateInput } from "@workspace/validations";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface Product {
@@ -14,13 +15,18 @@ interface Product {
   name: string;
   slug: string;
   mainImage: string;
+  galleryImages: string[];
   price: number;
-  discount: number;
+  discountPercentage?: number;
   stockQuantity: number;
   shortDescription: string;
   currency: "USD";
   createdAt: string;
   updatedAt: string;
+
+  category?: string;
+  requiresShipping?: boolean;
+  isFeatured?: boolean;
 
   description?: string;
   costPrice?: number;
@@ -53,6 +59,7 @@ export const useGetAllProducts = () => {
 };
 
 export const useCreateProduct = () => {
+  const router = useRouter();
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -61,6 +68,7 @@ export const useCreateProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"], exact: false });
       toast.success("Product created successfully");
+      router.push("/products");
     },
     onError: (err) => {
       toast.error(
@@ -97,5 +105,21 @@ export const useGetProductById = (id: string) => {
       return res.data;
     },
     enabled: !!id,
+  });
+};
+
+export const useDeleteProductById = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => api.delete(`/admin/products/${id}`),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["products"], exact: false });
+      toast.success("Product deleted successfully.");
+    },
+    onError: (err) => {
+      toast.error(
+        err instanceof Error ? err?.message : "Failed to delete product"
+      );
+    },
   });
 };

@@ -1,12 +1,13 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-type CartItem = {
+export type CartItem = {
   id: string;
   name: string;
   price: number;
   quantity: number;
   image?: string;
+  currency: string;
 };
 
 type CartStore = {

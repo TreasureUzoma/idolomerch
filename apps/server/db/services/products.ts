@@ -195,6 +195,7 @@ export const getProducts = async (
       stockQuantity: products.stockQuantity,
       shortDescription: products.shortDescription,
       currency: products.currency,
+      description: products.description,
       createdAt: products.createdAt,
       updatedAt: products.updatedAt,
       category: products.category,
@@ -205,7 +206,6 @@ export const getProducts = async (
 
     const adminSelect = {
       ...baseSelect,
-      description: products.description,
       costPrice: products.costPrice,
       sku: products.sku,
       barcode: products.barcode,

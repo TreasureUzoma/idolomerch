@@ -2,14 +2,6 @@
 
 import { ProductCard } from "./product-card";
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  imageUrl: string;
-};
-
 interface ProductsProps {
   products: Product[];
   currentCurrency: string;

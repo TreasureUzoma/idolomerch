@@ -87,6 +87,11 @@ export const createOrderSchema = z.object({
   paymentMethod: paymentMethodEnum.default("card").optional(),
 });
 
+export const createCheckoutSchema = z.object({
+  amount: numericString,
+  currency: z.enum(["USD"]),
+});
+
 export const productCreateSchema = z.object({
   name: z.string().min(3),
   slug: z.string().min(3),

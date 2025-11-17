@@ -34,7 +34,7 @@ export const Header = () => {
         <Link href="/cart" className="relative inline-block">
           <ShoppingBag size={25} className="text-foreground" />
           {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[0.625rem] font-bold text-white">
+            <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs font-bold text-background">
               {cartCount}
             </span>
           )}

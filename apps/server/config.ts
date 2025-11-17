@@ -15,6 +15,8 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_CLOUD_NAME: z.string(),
+  NOWPAYMETS_API_KEY: z.string(),
+  NOWPAYMETS_PUBLIC_KEY: z.string(),
 });
 
 export const envConfig = envSchema.parse(process.env);

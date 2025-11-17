@@ -35,7 +35,7 @@ export default function RootLayout({
       >
         <ThemeProvider>
           <Header />
-          <main>{children}</main>
+          <main className=" min-h-svh p-4 md:p-8">{children}</main>
           <Footer />
           <Toaster />
         </ThemeProvider>

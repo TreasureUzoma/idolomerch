@@ -1,21 +1,14 @@
 import { Products } from "@/components/products";
 import { API_BASE_URL } from "@workspace/constants/";
 
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  imageUrl: string;
-};
-
-async function fetchProducts(
+export async function fetchProducts(
   currency: string,
-  page: number
+  page: number,
+  category?: string
 ): Promise<Product[]> {
   try {
     const response = await fetch(
-      `${API_BASE_URL}/products?page=${page}&currency=${currency}`,
+      `${API_BASE_URL}/api/v1/products?page=${page}&currency=${currency}&caegory=${category}`,
       {
         cache: "no-store",
       }
@@ -26,14 +19,14 @@ async function fetchProducts(
     }
 
     const result = await response.json();
-    return result.data || [];
+    return result.data.data || [];
   } catch (error) {
     console.error("Fetch error:", error);
     return [];
   }
 }
 
-interface HomePageProps {
+export interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
@@ -45,7 +38,7 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const products = await fetchProducts(currency, page);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh p-4 md:p-8">
+    <div className="flex flex-col items-center justify-center">
       <Products
         products={products}
         currentCurrency={currency}

@@ -1,27 +1,20 @@
 import type React from "react";
 import Image from "next/image";
 import Link from "next/link";
-
-type Product = {
-  id: number;
-  name: string;
-  price: number;
-  currency: string;
-  imageUrl: string;
-};
+import numeral from "numeral";
 
 interface ProductCardProps {
   product: Product;
 }
 
 export const ProductCard = ({ product }: ProductCardProps) => {
-  const { id, name, price, currency, imageUrl } = product;
+  const { name, price, currency, mainImage, slug } = product;
 
   return (
-    <Link href={`/products/${id}`} className="block group">
+    <Link href={`/products/${slug}`} className="block group">
       <div className="relative w-full aspect-square">
         <Image
-          src={imageUrl || "/placeholder.svg"}
+          src={mainImage}
           alt={name}
           fill
           unoptimized
@@ -34,8 +27,8 @@ export const ProductCard = ({ product }: ProductCardProps) => {
         <h3 className="text-sm line-clamp-2">{name}</h3>
 
         <div className="flex items-baseline gap-1 justify-center">
-          <span>{price.toFixed(2)}</span>
           <span>{currency}</span>
+          <span>{numeral(price).format("0,0.00")}</span>
         </div>
       </div>
     </Link>
