@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { QRCodeSVG } from "qrcode.react";
 import { toast } from "sonner";
 import numeral from "numeral";
+import { API_BASE_URL } from "@workspace/constants";
 
 interface Invoice {
   id: string;
@@ -40,7 +41,7 @@ export default function CryptoCheckout() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/crypto/invoice", {
+      const res = await fetch(`${API_BASE_URL}/api/v1/invoice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ amount: totalAmount, currency }),
@@ -65,7 +66,7 @@ export default function CryptoCheckout() {
 
     const interval = setInterval(async () => {
       try {
-        const res = await fetch(`/api/crypto/invoice/${invoice.id}`);
+        const res = await fetch(`${API_BASE_URL}/api/v1/invoice/${invoice.id}`);
         const data: Invoice = await res.json();
 
         if (data.status === "paid") {
