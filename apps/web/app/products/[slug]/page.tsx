@@ -1,11 +1,12 @@
-import { fetchProducts, HomePageProps } from "@/app/page";
 import ProductId from "@/components/product-id";
 import { Products } from "@/components/products";
+import { fetchProducts } from "@/lib/fetch-products";
 import { API_BASE_URL } from "@workspace/constants";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 async function fetchProduct(
@@ -20,14 +21,13 @@ async function fetchProduct(
   );
 
   if (!res.ok) return null;
-
   const data = await res.json();
-  console.log(data);
   return data.data || null;
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const product = await fetchProduct(params.slug, "USD");
+  const { slug } = await params;
+  const product = await fetchProduct(slug, "USD");
 
   if (!product) {
     return {
@@ -42,15 +42,13 @@ export async function generateMetadata({ params }: PageProps) {
   };
 }
 
-export default async function Page({
-  params,
-  searchParams,
-}: HomePageProps & PageProps) {
-  const filterParams = await searchParams;
-  const currency = (filterParams.currency as string) || "USD";
-  const page = parseInt((filterParams.page as string) || "1", 10);
-  const product = await fetchProduct(params.slug, currency);
+export default async function Page({ params, searchParams }: PageProps) {
+  const { slug } = await params;
+  const filters = await searchParams;
+  const currency = (filters.currency as string) || "USD";
+  const page = parseInt((filters.page as string) || "1", 10);
 
+  const product = await fetchProduct(slug, currency);
   if (!product) notFound();
 
   const products = await fetchProducts(currency, page);

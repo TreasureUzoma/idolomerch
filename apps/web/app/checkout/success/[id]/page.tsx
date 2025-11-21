@@ -12,7 +12,7 @@ export default async function CheckoutSuccessPage({
   const json = await res.json();
   const order = json?.data;
 
-  if (!order) return notFound();
+  if (!order) notFound();
 
   if (order.paymentStatus !== "paid") {
     return (

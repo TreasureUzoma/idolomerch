@@ -5,7 +5,24 @@
     "build": {
       "dependsOn": ["^build"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "outputs": [".next/**", "!.next/cache/**"]
+      "outputs": [".next/**", "!.next/cache/**"],
+      "env": [
+        "APP_URL",
+        "ADMIN_APP_URL",
+        "SERVER_URL",
+        "NEXT_PUBLIC_SERVER_URL",
+        "JWT_REFRESH_SECRET",
+        "JWT_ACCESS_SECRET",
+        "ENCRYPTION_KEY",
+        "DB_URL",
+        "REDIS_URL",
+        "EXCHANGE_RATE_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_CLOUD_NAME",
+        "NOWPAYMENTS_API_KEY",
+        "NOWPAYMENTS_PUBLIC_KEY"
+      ]
     },
     "lint": {
       "dependsOn": ["^lint"]

@@ -9,11 +9,7 @@ interface ProductsProps {
   limit?: number;
 }
 
-export const Products = ({
-  products,
-  currentCurrency,
-  title = "Products",
-}: ProductsProps) => {
+export const Products = ({ products, title = "Products" }: ProductsProps) => {
   return (
     <div className="flex flex-col items-center justify-center gap-8 w-full max-w-7xl">
       <div className="w-full">

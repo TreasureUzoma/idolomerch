@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import React, { useState } from "react";
 import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
@@ -37,7 +39,7 @@ const CheckoutFormSchema = createOrderSchema.pick({
   shippingAddress: true,
 });
 
-export default function CryptoCheckoutRedirect() {
+export default function CryptoCheckoutRedirectPage() {
   const router = useRouter();
   const { cart, clearCart } = useCartStore();
   const [loading, setLoading] = useState(false);

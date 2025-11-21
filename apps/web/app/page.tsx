@@ -1,32 +1,7 @@
 import { Products } from "@/components/products";
-import { API_BASE_URL } from "@workspace/constants/";
+import { fetchProducts } from "@/lib/fetch-products";
 
-export async function fetchProducts(
-  currency: string,
-  page: number,
-  category?: string
-): Promise<Product[]> {
-  try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/v1/products?page=${page}&currency=${currency}&caegory=${category}`,
-      {
-        cache: "no-store",
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch products: ${response.statusText}`);
-    }
-
-    const result = await response.json();
-    return result.data.data || [];
-  } catch (error) {
-    console.error("Fetch error:", error);
-    return [];
-  }
-}
-
-export interface HomePageProps {
+interface HomePageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 

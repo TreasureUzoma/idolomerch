@@ -1,7 +1,8 @@
-import React from "react";
+import React, { Suspense } from "react";
 import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
 import { ModeToggle } from "./theme-toggle";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export const Footer = () => {
   return (
@@ -11,7 +12,9 @@ export const Footer = () => {
           <Link href="#" className="font-semibold text-primary">
             idolomerch
           </Link>
-          <CurrencyDropdown />
+          <Suspense fallback={<Skeleton />}>
+            <CurrencyDropdown />
+          </Suspense>
           <div>
             <ModeToggle />
           </div>

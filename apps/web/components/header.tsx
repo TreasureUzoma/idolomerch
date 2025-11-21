@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { Menu, ShoppingBag, X } from "lucide-react";
 import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
 import { useCartStore } from "@/store/cart";
+import { Skeleton } from "@workspace/ui/components/skeleton";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -69,7 +70,9 @@ export const Header = () => {
               {label}
             </Link>
           ))}
-          <CurrencyDropdown />
+          <Suspense fallback={<Skeleton />}>
+            <CurrencyDropdown />
+          </Suspense>
         </nav>
       </div>
     </header>
