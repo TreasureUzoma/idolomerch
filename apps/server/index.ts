@@ -1,5 +1,4 @@
 import { Hono, type Context } from "hono";
-import { serve } from "bun";
 import { logger } from "hono/logger";
 import productsRoutes from "./routes/api/v1/products";
 import { envConfig } from "./config";
