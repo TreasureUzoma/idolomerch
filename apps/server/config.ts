@@ -1,5 +1,4 @@
 import { z } from "zod";
-import "dotenv/config";
 
 const envSchema = z.object({
   APP_URL: z.string(),

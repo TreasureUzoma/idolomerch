@@ -84,4 +84,4 @@ app.route("/", v1);
 app.route("/", admin);
 
 console.log("Server is Running on port:", process.env.PORT);
-export { app };
+export default app.fetch;
