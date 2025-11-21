@@ -3,6 +3,7 @@ import { db } from "..";
 import { refreshTokens, users } from "../schema/users";
 import { eq, type InferInsertModel } from "drizzle-orm";
 import { meta } from "@workspace/constants";
+import { hash, compare } from "bcrypt-ts";
 
 export type Role = "user" | "admin" | "superadmin";
 
@@ -33,7 +34,8 @@ export const login = async (
       data: null,
     };
   }
-  const valid = await Bun.password.verify(password, foundUser.passwordHash);
+
+  const valid = await compare(password, foundUser.passwordHash);
   if (!valid) {
     return {
       status: "error",
@@ -73,7 +75,7 @@ export const signup = async (payload: Login) => {
     };
   }
 
-  const hashedPassword = await Bun.password.hash(password);
+  const hashedPassword = await hash(password, 10);
 
   await db
     .insert(users)
