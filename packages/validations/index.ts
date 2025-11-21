@@ -184,7 +184,7 @@ export const adminOrderUpdateSchema = z
     status: orderStatusEnum,
     trackingNumber: z.string().optional(),
     adminNotes: z.string().optional(),
-
+    paymentMethod: paymentMethodEnum.optional(),
     isPaid: z.boolean().optional(),
   })
   .partial()
@@ -200,3 +200,6 @@ export type AdminOrderUpdateInput = z.infer<typeof adminOrderUpdateSchema>;
 export type ProductCreateInput = z.infer<typeof productCreateSchema>;
 export type ProductUpdateInput = z.infer<typeof productUpdateSchema>;
 export type ProductsParams = z.infer<typeof productsParamsSchema>;
+
+export type CurrencyType = z.infer<typeof currencyEnum>;
+export type ProductSortType = z.infer<typeof productSortEnum>;

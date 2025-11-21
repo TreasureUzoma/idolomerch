@@ -12,6 +12,7 @@ import { rateLimiter } from "./middlewares/rate-limiter";
 import { cors } from "hono/cors";
 import uploadRoutes from "./routes/api/v1/admin/upload";
 import type { AuthType } from "./types";
+import webhookOrderRoutes from "./routes/api/v1/webhooks/order";
 
 const app = new Hono();
 
@@ -61,6 +62,7 @@ v1.get("/health", (c) => {
 
 v1.route("/products", productsRoutes);
 v1.route("/orders", orderRoutes);
+v1.route("/webhooks/now-payment", webhookOrderRoutes);
 
 // admin
 admin.route("/auth", adminAuthRoutes);

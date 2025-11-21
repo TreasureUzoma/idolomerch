@@ -91,8 +91,6 @@ export const createOrder = async (
   }
 };
 
-// --- R: Get Orders (Unified) ---
-
 export const getOrders = async (
   params: ProductsParams,
   lookup?: { id?: string; userId?: string; isAdmin?: boolean }
@@ -170,7 +168,7 @@ export const updateOrder = async (
 
     const updated = await db
       .update(orders)
-      .set(updatePayload)
+      .set({ ...updatePayload, updatedAt: new Date() })
       .where(eq(orders.id, orderId))
       .returning();
 
@@ -197,6 +195,30 @@ export const deleteOrder = async (
     return { status: "success", data: deleted[0] };
   } catch (e) {
     const message = e instanceof Error ? e.message : "Failed to delete order";
+    return { status: "error", error: message };
+  }
+};
+
+export const getOrder = async (
+  orderId: string,
+  isAdmin: boolean = false
+): ServiceResponse<typeof orders.$inferSelect> => {
+  try {
+    if (!isAdmin) {
+    }
+
+    const [order] = await db
+      .select()
+      .from(orders)
+      .where(eq(orders.id, orderId));
+
+    if (!order) {
+      throw new Error("Order not found");
+    }
+
+    return { status: "success", data: order };
+  } catch (e) {
+    const message = e instanceof Error ? e.message : "Failed to retrieve order";
     return { status: "error", error: message };
   }
 };

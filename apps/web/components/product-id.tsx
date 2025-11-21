@@ -24,8 +24,10 @@ export default function ProductId({ product }: ProductClientProps) {
   const [qty, setQty] = useState(1);
 
   const handleAdd = () => {
+    console.log(product);
     handleAddToCart({
       id: product.id,
+      slug: product.slug,
       name: product.name,
       price: product.price,
       quantity: qty,

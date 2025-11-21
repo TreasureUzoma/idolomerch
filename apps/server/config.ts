@@ -5,6 +5,7 @@ const envSchema = z.object({
   APP_URL: z.string(),
   ADMIN_APP_URL: z.string(),
   DB_URL: z.string(),
+  SERVER_URL: z.string(),
   JWT_REFRESH_SECRET: z.string(),
   JWT_ACCESS_SECRET: z.string(),
   NODE_ENV: z.string().default("development"),
@@ -15,8 +16,8 @@ const envSchema = z.object({
   CLOUDINARY_API_SECRET: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_CLOUD_NAME: z.string(),
-  NOWPAYMETS_API_KEY: z.string(),
-  NOWPAYMETS_PUBLIC_KEY: z.string(),
+  NOWPAYMENTS_API_KEY: z.string(),
+  NOWPAYMENTS_PUBLIC_KEY: z.string(),
 });
 
 export const envConfig = envSchema.parse(process.env);

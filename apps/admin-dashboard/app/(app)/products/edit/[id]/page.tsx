@@ -15,7 +15,7 @@ export default function EditProductPage({
   if (error) return <ErrorPage error={error} />;
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-2">Edit Product {data?.slug}</h1>
+      <h1 className="text-4xl font-bold mb-2">Edit Product: {data?.slug}</h1>
       <ProductForm
         mode="update"
         defaultValues={data}
