@@ -83,17 +83,5 @@ admin.route("/upload", uploadRoutes);
 app.route("/", v1);
 app.route("/", admin);
 
-export default app;
-
-// const server = serve({
-//   port: envConfig.PORT,
-//   fetch: app.fetch,
-// });
-
-// console.log(`Server is running on http://localhost:${server.port}`);
-
-// to generate a new password, run
-// const hasedPwd = await Bun.password.hash("MySuperStrongPassword@3545@");
-// console.log(hasedPwd);
-
-// then update ur db with the hash printed in console
+console.log("Server is Running on port:", process.env.PORT);
+export { app };
