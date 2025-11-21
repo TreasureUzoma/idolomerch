@@ -22,6 +22,8 @@ export async function fetchProducts(
     });
 
     if (!response.ok) {
+      console.log(API_BASE_URL);
+      console.log(response);
       throw new Error(`Failed to fetch products: ${response.statusText}`);
     }
 

@@ -9,6 +9,7 @@
       "env": [
         "APP_URL",
         "API_URL",
+        "NEXT_PUBLIC_API_URL",
         "ADMIN_APP_URL",
         "SERVER_URL",
         "PORT",
