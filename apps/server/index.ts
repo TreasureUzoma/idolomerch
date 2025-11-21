@@ -83,5 +83,4 @@ admin.route("/upload", uploadRoutes);
 app.route("/", v1);
 app.route("/", admin);
 
-console.log("Server is Running on port:", process.env.PORT);
-export default app.fetch;
+export default app;
