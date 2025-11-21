@@ -8,8 +8,10 @@
       "outputs": [".next/**", "!.next/cache/**"],
       "env": [
         "APP_URL",
+        "API_URL",
         "ADMIN_APP_URL",
         "SERVER_URL",
+        "PORT",
         "NEXT_PUBLIC_SERVER_URL",
         "JWT_REFRESH_SECRET",
         "JWT_ACCESS_SECRET",

@@ -9,7 +9,7 @@ const envSchema = z.object({
   JWT_REFRESH_SECRET: z.string(),
   JWT_ACCESS_SECRET: z.string(),
   NODE_ENV: z.string().default("development"),
-  PORT: z.coerce.number().default(5000),
+  PORT: z.coerce.number(),
   ENCRYPTION_KEY: z.string(),
   EXCHANGE_RATE_API_KEY: z.string(),
   REDIS_URL: z.string(),

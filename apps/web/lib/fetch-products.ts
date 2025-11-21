@@ -6,12 +6,20 @@ export async function fetchProducts(
   category?: string
 ): Promise<Product[]> {
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/v1/products?page=${page}&currency=${currency}&category=${category}`,
-      {
-        cache: "no-store",
-      }
-    );
+    const url = new URL(`${API_BASE_URL}/api/v1/products`);
+
+    const params = url.searchParams;
+
+    params.append("page", String(page));
+    params.append("currency", currency);
+
+    if (category && category.trim() !== "") {
+      params.append("category", category.trim());
+    }
+
+    const response = await fetch(url.toString(), {
+      cache: "no-store",
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to fetch products: ${response.statusText}`);
