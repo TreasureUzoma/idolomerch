@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
 const api: AxiosInstance = axios.create({
-  baseURL: `${process.env.SERVER_URL || process.env.NEXT_PUBlIC_SERVER_URL || process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "https://idolomerchserver.vercel.app"}/api/v1`,
+  baseURL: `${process.env.SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "https://idolomerchserver.vercel.app"}/api/v1`,
   withCredentials: true,
 });
 

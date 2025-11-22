@@ -90,7 +90,9 @@ export default function OrdersPage() {
             {orders.map((order: any) => (
               <Card key={order.id}>
                 <CardHeader>
-                  <CardTitle className="text-lg">Order #{order.id}</CardTitle>
+                  <CardTitle className="text-lg">
+                    Order #{order.orderNumber}
+                  </CardTitle>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
@@ -99,7 +101,7 @@ export default function OrdersPage() {
                       Customer:
                     </span>
                     <span className="font-medium">
-                      {order.customer?.name || "N/A"}
+                      {order.userInfo?.fullName || "N/A"}
                     </span>
                   </div>
 
@@ -107,9 +109,7 @@ export default function OrdersPage() {
                     <span className="text-sm text-muted-foreground">
                       Total:
                     </span>
-                    <span className="font-semibold">
-                      ${order.total.toFixed(2)}
-                    </span>
+                    <span className="font-semibold">${order.total}</span>
                   </div>
 
                   <div>
@@ -124,9 +124,11 @@ export default function OrdersPage() {
                   </div>
 
                   <div className="flex flex-col gap-2">
-                    <span className="text-sm font-medium">Status:</span>
+                    <span className="text-sm font-medium">
+                      Status (Payment):
+                    </span>
                     <Select
-                      value={order.status}
+                      value={order.paymentStatus}
                       disabled={isUpdatingOrder}
                       onValueChange={(value) =>
                         updateOrderStatus(order.id, value)

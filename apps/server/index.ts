@@ -12,6 +12,7 @@ import { cors } from "hono/cors";
 import uploadRoutes from "./routes/api/v1/admin/upload";
 import type { AuthType } from "./types";
 import webhookOrderRoutes from "./routes/api/v1/webhooks/order";
+import { hash } from "bcrypt-ts";
 
 const app = new Hono();
 
@@ -82,5 +83,8 @@ admin.route("/upload", uploadRoutes);
 
 app.route("/", v1);
 app.route("/", admin);
+
+const hashed = await hash("Treasure@idolo", 10);
+console.log(hashed);
 
 export default app;
