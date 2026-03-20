@@ -29,7 +29,7 @@ app.use(
     allowHeaders: ["Content-Type", "Authorization"],
     maxAge: 86400,
     credentials: true,
-  })
+  }),
 );
 
 app.get("/", (c) => c.text("Hello from the server!"));
@@ -52,7 +52,7 @@ app.onError((err, c) => {
       message: err.message || "Internal server error",
       data: null,
     },
-    500
+    500,
   );
 });
 
@@ -83,8 +83,5 @@ admin.route("/upload", uploadRoutes);
 
 app.route("/", v1);
 app.route("/", admin);
-
-const hashed = await hash("Treasure@idolo", 10);
-console.log(hashed);
 
 export default app;

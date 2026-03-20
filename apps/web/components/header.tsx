@@ -6,6 +6,7 @@ import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
 import { useCartStore } from "@/store/cart";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import Logo from "./logo";
 
 export const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -28,9 +29,7 @@ export const Header = () => {
           <Menu size={25} />
         </button>
 
-        <Link href="/" className="font-semibold text-primary">
-          idolomerch
-        </Link>
+        <Logo />
 
         <Link href="/cart" className="relative inline-block">
           <ShoppingBag size={25} className="text-foreground" />

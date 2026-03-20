@@ -1,0 +1,21 @@
+"use client";
+
+import { cn } from "@workspace/ui/lib/utils";
+
+export function Separator({
+  orientation = "horizontal",
+  className,
+  ...props
+}: {
+  orientation?: "horizontal" | "vertical";
+  className?: string;
+}) {
+  const baseStyles =
+    "bg-stone-300 dark:bg-stone-700 opacity-80 shrink-0 rounded-full";
+  const orientationStyles =
+    orientation === "horizontal" ? "h-px w-full my-2" : "w-px h-5 mx-2";
+
+  return (
+    <div className={cn(baseStyles, orientationStyles, className)} {...props} />
+  );
+}

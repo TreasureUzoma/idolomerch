@@ -3,15 +3,14 @@ import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
 import { ModeToggle } from "./theme-toggle";
 import { Skeleton } from "@workspace/ui/components/skeleton";
+import Logo from "./logo";
 
 export const Footer = () => {
   return (
     <footer className="w-full border-t py-6 px-4 md:px-[5rem] text-sm font-medium">
       <div className="max-w-screen-xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
         <div className="space-x-4 flex items-center">
-          <Link href="#" className="font-semibold text-primary">
-            idolomerch
-          </Link>
+          <Logo />
           <Suspense fallback={<Skeleton />}>
             <CurrencyDropdown />
           </Suspense>
@@ -53,12 +52,7 @@ export const Footer = () => {
           </Link>
         </div>
 
-        <div className="text-xs">
-          &copy; {new Date().getFullYear()}{" "}
-          <Link href="#" className="font-semibold text-primary">
-            idolomerch
-          </Link>
-        </div>
+        <div className="text-xs">&copy; {new Date().getFullYear()} </div>
       </div>
     </footer>
   );
