@@ -1,7 +1,7 @@
 import type { Context } from "hono";
-import type { ZodError } from "zod";
+import type { z } from "zod";
 
-export const validationErrorResponse = (c: Context, error: ZodError) => {
+export const validationErrorResponse = (c: Context, error: z.core.$ZodError) => {
   const message = error.issues.map((issue) => issue.message).join(", ");
   return c.json(
     {
