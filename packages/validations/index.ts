@@ -117,7 +117,7 @@ export const productCreateSchema = z.object({
   mainImage: z.string().url().optional(),
   galleryImages: z.array(z.string().url()).optional(),
   tags: z.array(z.string()).optional(),
-  attributes: z.record(z.union([z.string(), z.number()])).optional(),
+  attributes: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
   isFeatured: z.boolean().default(false).optional(),
   isNew: z.boolean().default(false).optional(),
   status: productStatusEnum.default("draft"),
