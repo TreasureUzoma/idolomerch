@@ -15,7 +15,7 @@ interface Props {
   currencies?: string[];
 }
 
-const DEFAULT_CURRENCY = "USD";
+const DEFAULT_CURRENCY = "NGN";
 const CURRENCY_PARAM_KEY = "currency";
 
 const CURRENCY_TO_COUNTRY: Record<string, string> = {

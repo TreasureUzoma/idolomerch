@@ -18,7 +18,7 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "idolomerch - Shop weirdly interesting merchs by idolodev.",
+  title: "idolo.dev store - Shop weirdly interesting merchs by idolodev.",
   description:
     "Uncover limited drops, playful designs, and chaoqtic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
 };

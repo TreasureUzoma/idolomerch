@@ -20,11 +20,11 @@ export default function PrivacyPolicyPage() {
         <section>
           <h2 className="text-2xl font-semibold mb-4">1. Introduction</h2>
           <p>
-            Welcome to idolomerch. We respect your privacy and are committed to
-            protecting your personal data. This privacy policy will inform you
-            as to how we look after your personal data when you visit our
-            website (regardless of where you visit it from) and tell you about
-            your privacy rights and how the law protects you.
+            Welcome to store.idolo.dev. We respect your privacy and are
+            committed to protecting your personal data. This privacy policy will
+            inform you as to how we look after your personal data when you visit
+            our website (regardless of where you visit it from) and tell you
+            about your privacy rights and how the law protects you.
           </p>
         </section>
 
