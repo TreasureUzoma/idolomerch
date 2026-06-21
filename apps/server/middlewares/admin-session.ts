@@ -42,7 +42,8 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
       try {
         const decoded = (await verify(
           accessToken,
-          envConfig.JWT_ACCESS_SECRET
+          envConfig.JWT_ACCESS_SECRET,
+          "HS256"
         )) as { id: string; email: string; name?: string; role: Role };
         if (decoded.role === "superadmin") {
           return c.json({ message: "Unauthorized", status: "error" }, 403);
@@ -69,7 +70,8 @@ export const withAdminAuth: MiddlewareHandler = async (c, next) => {
     try {
       decodedRefresh = (await verify(
         refreshToken,
-        envConfig.JWT_REFRESH_SECRET
+        envConfig.JWT_REFRESH_SECRET,
+        "HS256"
       )) as { id: string };
     } catch {
       return c.json({ message: "Unauthorized", status: "error" }, 401);

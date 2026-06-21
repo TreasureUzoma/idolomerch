@@ -78,7 +78,7 @@ export default function ProductId({ product }: ProductClientProps) {
             onClick={() => setCurrentIndex(i)}
             className={cn(
               "w-20 h-20 min-w-20 rounded-md overflow-hidden border shrink-0",
-              currentIndex === i ? "border-black" : "border-transparent"
+              currentIndex === i ? "border-black" : "border-transparent",
             )}
           >
             <img src={img} className="w-full h-full object-cover" />
@@ -87,7 +87,7 @@ export default function ProductId({ product }: ProductClientProps) {
       </div>
 
       <div className="mt-8 px-2 md:px-0 md:max-w-2xl">
-        <h1 className="text-3xl font-bold">{product.name}</h1>
+        <h1 className="text-3xl font-semibold">{product.name}</h1>
 
         <p className="text-muted-foreground mt-3">{product.description}</p>
 
