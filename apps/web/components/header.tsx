@@ -1,7 +1,7 @@
 "use client";
 
 import React, { Suspense, useState } from "react";
-import { Menu, ShoppingBag, X } from "lucide-react";
+import { ShoppingBag, TextAlignJustify, X } from "lucide-react";
 import Link from "next/link";
 import { CurrencyDropdown } from "./currency-dropdown";
 import { useCartStore } from "@/store/cart";
@@ -26,7 +26,7 @@ export const Header = () => {
     <header className="sticky top-0 left-0 right-0 z-50 p-4 md:px-8 shadow-sm bg-background">
       <div className="flex items-center justify-between max-w-7xl mx-auto">
         <button onClick={() => setMenuOpen(true)} className="text-foreground">
-          <Menu size={25} />
+          <TextAlignJustify size={25} />
         </button>
 
         <Logo />

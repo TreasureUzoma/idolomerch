@@ -6,6 +6,7 @@ import { Toaster } from "sonner";
 import { Metadata } from "next";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
+import { CurrencySync } from "@/components/currency-sync";
 
 const fontSans = Outfit({
   subsets: ["latin"],
@@ -34,6 +35,7 @@ export default function RootLayout({
         className={`${fontSans.variable} ${fontMono.variable} font-sans antialiased `}
       >
         <ThemeProvider>
+          <CurrencySync />
           <Header />
           <main className=" min-h-svh p-4 md:p-8">{children}</main>
           <Footer />

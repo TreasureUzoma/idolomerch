@@ -11,8 +11,9 @@ import numeral from "numeral";
 export default function CartInfo() {
   const router = useRouter();
   const { cart, removeFromCart, updateQuantity } = useCartStore();
+  const storeCurrency = useCartStore((state) => state.currency);
 
-  const currency = cart[0]?.currency || "USD";
+  const currency = storeCurrency || "USD";
 
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,

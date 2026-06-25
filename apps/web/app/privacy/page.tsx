@@ -1,5 +1,6 @@
 import React from "react";
 import { Metadata } from "next";
+import { meta } from "@workspace/constants";
 
 export const metadata: Metadata = {
   title: "Privacy Policy - idolomerch",
@@ -90,7 +91,10 @@ export default function PrivacyPolicyPage() {
           <h2 className="text-2xl font-semibold mb-4">5. Contact Us</h2>
           <p>
             If you have any questions about this privacy policy or our privacy
-            practices, please contact us at: support@idolomerch.com
+            practices, please contact us at:{" "}
+            <a className="underline" href={`mailto:${meta.email}`}>
+              {meta.email}
+            </a>
           </p>
         </section>
       </div>

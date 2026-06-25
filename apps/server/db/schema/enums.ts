@@ -18,7 +18,17 @@ export const userRoleEnum = pgEnum("user_role", [
   "superadmin",
 ]);
 
-export const currencyEnum = pgEnum("currency", ["USD", "EUR"]);
+export const currencyEnum = pgEnum("currency", [
+  "USD",
+  "EUR",
+  "GBP",
+  "NGN",
+  "CAD",
+  "AUD",
+  "JPY",
+  "CNY",
+  "INR",
+]);
 
 export const productStatusEnum = pgEnum("product_status", [
   "active",

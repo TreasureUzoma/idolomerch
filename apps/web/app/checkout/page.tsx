@@ -71,11 +71,12 @@ export default function CryptoCheckoutRedirectPage() {
     mode: "onBlur",
   });
 
+  const storeCurrency = useCartStore((state) => state.currency);
   const totalAmount = cart.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
-  const currency = (cart[0]?.currency || "USD") as CurrencyType;
+  const currency = (storeCurrency || "USD") as CurrencyType;
   const formattedTotal = numeral(totalAmount).format("0,0.00");
 
   const onSubmit: SubmitHandler<CheckoutFormInput> = (data) => {
@@ -129,7 +130,7 @@ export default function CryptoCheckoutRedirectPage() {
       toast.error(
         err instanceof Error
           ? err?.message
-          : "Error processing order. Please try again."
+          : "Error processing order. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -141,7 +142,7 @@ export default function CryptoCheckoutRedirectPage() {
     label: string,
     placeholder: string,
     type: string,
-    group: "userInfo" | "shippingAddress"
+    group: "userInfo" | "shippingAddress",
   ) => {
     const fieldPath = `${group}.${name}`;
     const error = errors[group] && (errors[group] as any)[name];
@@ -183,21 +184,21 @@ export default function CryptoCheckoutRedirectPage() {
           "Full Name *",
           "Enter your full name",
           "text",
-          "userInfo"
+          "userInfo",
         )}
         {renderInputField(
           "email",
           "Email *",
           "Enter your email address",
           "email",
-          "userInfo"
+          "userInfo",
         )}
         {renderInputField(
           "phoneNumber",
           "Phone Number",
           "Enter your phone number",
           "tel",
-          "userInfo"
+          "userInfo",
         )}
       </div>
 
@@ -210,49 +211,49 @@ export default function CryptoCheckoutRedirectPage() {
           "Recipient Name *",
           "Recipient's full name",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "phone",
           "Recipient Phone",
           "Recipient's phone number",
           "tel",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "street",
           "Street Address *",
           "123 Main St",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "city",
           "City *",
           "New York",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "state",
           "State/Region",
           "NY",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "postalCode",
           "Postal Code",
           "10001",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
         {renderInputField(
           "country",
           "Country *",
           "USA",
           "text",
-          "shippingAddress"
+          "shippingAddress",
         )}
       </div>
 
@@ -327,7 +328,7 @@ export default function CryptoCheckoutRedirectPage() {
 
   return (
     <div className="max-w-3xl mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-6">Crypto Checkout</h1>
+      <h1 className="text-3xl font-bold mb-6">Checkout</h1>
       {cart.length === 0 ? (
         <p className="text-muted-foreground">Your cart is empty.</p>
       ) : (

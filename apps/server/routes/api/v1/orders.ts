@@ -45,10 +45,11 @@ const NOWPAYMENTS_API_KEY = envConfig.NOWPAYMENTS_API_KEY;
 const NOWPAYMENTS_URL = "https://api.nowpayments.io/v1/invoice";
 
 const calculateFinalOrderAmount = async (
-  items: CartItemInput[]
+  items: CartItemInput[],
+  currency: CurrencyType
 ): Promise<{ total: number; currency: CurrencyType }> => {
   const productLookupParams = {
-    currency: "USD" as CurrencyType,
+    currency,
     // these extra params arent actually needed in the service function, only here to satisfy weird types
     page: 1,
     limit: 1,
@@ -89,7 +90,7 @@ const calculateFinalOrderAmount = async (
 
   const finalTotal = Math.round(totalAmount * 100) / 100;
 
-  return { total: finalTotal, currency: "USD" };
+  return { total: finalTotal, currency };
 };
 
 orderRoutes.post("/", zValidator("json", createOrderSchema), async (c) => {
@@ -97,7 +98,7 @@ orderRoutes.post("/", zValidator("json", createOrderSchema), async (c) => {
 
   try {
     const { total: calculatedTotal, currency: finalCurrency } =
-      await calculateFinalOrderAmount(body.products);
+      await calculateFinalOrderAmount(body.products, body.currency);
 
     if (calculatedTotal <= 0) {
       return c.json({ error: "Order total must be greater than zero." }, 400);
