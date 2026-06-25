@@ -36,23 +36,11 @@ export const createOrder = async (
     if (!products || products.length === 0)
       throw new Error("At least one product is required");
 
-    const TARGET_CURRENCY = "USD";
-    let conversionRate = 1;
-
-    if (sourceCurrency !== TARGET_CURRENCY) {
-      conversionRate = await currencyConverter.getRate(
-        sourceCurrency,
-        TARGET_CURRENCY
-      );
-    }
-
     const subtotal = products.reduce((acc, p) => {
       // @ts-expect-error
       if (!("price" in p)) throw new Error(`Product ${p.slug} missing price`);
 
-      const priceInUSD = Number(p.price) * conversionRate;
-
-      return acc + priceInUSD * (p.quantity || 1);
+      return acc + Number(p.price) * (p.quantity || 1);
     }, 0);
 
     const shippingFee = 0;
@@ -70,7 +58,7 @@ export const createOrder = async (
         paymentStatus: "pending",
         paymentMethod: paymentMethodToUse,
         shippingMethod: "standard",
-        currency: TARGET_CURRENCY,
+        currency: sourceCurrency as any,
         subtotal: subtotal.toFixed(2),
         shippingFee: shippingFee.toFixed(2),
         discountAmount: discountAmount.toFixed(2),

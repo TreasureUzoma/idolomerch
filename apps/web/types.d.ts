@@ -5,10 +5,11 @@ type Product = {
   name: string;
   slug: string;
   price: number;
+  usdPrice: number;
   stockQuantity: number;
   shortDescription: string;
   description?: string;
-  currency: "USD";
+  currency: string;
   createdAt: string;
   updatedAt: string;
   category: string;

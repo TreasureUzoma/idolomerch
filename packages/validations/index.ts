@@ -89,7 +89,7 @@ export const createOrderSchema = z.object({
 
 export const createCheckoutSchema = z.object({
   amount: numericString,
-  currency: z.enum(["USD"]),
+  currency: currencyEnum,
 });
 
 export const productCreateSchema = z.object({

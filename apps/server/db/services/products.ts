@@ -281,6 +281,7 @@ export const getProducts = async (
         return {
           ...p,
           price: finalPrice,
+          usdPrice: p.price ? Number(p.price) : p.price,
           currency: TARGET_CURRENCY,
         };
       });
@@ -288,6 +289,7 @@ export const getProducts = async (
       productData = productData.map((p: any) => ({
         ...p,
         price: p.price ? Number(p.price) : p.price,
+        usdPrice: p.price ? Number(p.price) : p.price,
         currency: BASE_CURRENCY,
       }));
     }

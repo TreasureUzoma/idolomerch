@@ -30,6 +30,7 @@ export default function ProductId({ product }: ProductClientProps) {
       slug: product.slug,
       name: product.name,
       price: product.price,
+      basePrice: product.usdPrice,
       quantity: qty,
       image: product.mainImage,
       currency: product.currency,

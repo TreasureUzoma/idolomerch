@@ -8,8 +8,25 @@ import {
 
 import { validationErrorResponse } from "../../../utils/validate-error-res";
 import { getProducts } from "../../../db/services/products";
+import { currencyConverter } from "../../../db/services/currency-converter";
 
 const productsRoutes = new Hono();
+
+productsRoutes.get("/rates", async (c) => {
+  const to = c.req.query("to") || "USD";
+  try {
+    const rate = await currencyConverter.getRate("USD", to);
+    return c.json({ status: "success", rate });
+  } catch (e) {
+    return c.json(
+      {
+        status: "error",
+        error: e instanceof Error ? e.message : "Failed to get rate",
+      },
+      400
+    );
+  }
+});
 
 productsRoutes.get(
   "/",
