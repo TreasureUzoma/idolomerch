@@ -89,6 +89,16 @@ export default function CryptoCheckoutRedirectPage() {
       return;
     }
 
+    const invalidItem = cart.find(
+      (item) => !Number.isFinite(item.price) || item.price <= 0,
+    );
+    if (invalidItem) {
+      toast.error(
+        `"${invalidItem.name}" has an invalid price. Please remove it and add it back to your cart.`,
+      );
+      return;
+    }
+
     setLoading(true);
 
     const formData = getValues();
