@@ -4,6 +4,7 @@ import { CurrencyDropdown } from "./currency-dropdown";
 import { ModeToggle } from "./theme-toggle";
 import { Skeleton } from "@workspace/ui/components/skeleton";
 import Logo from "./logo";
+import { NewsletterForm } from "./newsletter-form";
 
 export const Footer = () => {
   return (
@@ -53,6 +54,9 @@ export const Footer = () => {
         </div>
 
         <div className="text-xs">&copy; {new Date().getFullYear()} </div>
+      </div>
+      <div className="flex items-center justify-center md:justify-end mt-4 md:mt-6">
+        <NewsletterForm />
       </div>
     </footer>
   );

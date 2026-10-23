@@ -1,7 +1,7 @@
 import ProductId from "@/components/product-id";
 import { Products } from "@/components/products";
+import { API_BASE_URL } from "@/lib/constants";
 import { fetchProducts } from "@/lib/fetch-products";
-import { API_BASE_URL } from "@workspace/constants";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -11,13 +11,13 @@ interface PageProps {
 
 async function fetchProduct(
   slug: string,
-  currency: string
+  currency: string,
 ): Promise<Product | null> {
   const res = await fetch(
     `${API_BASE_URL}/api/v1/products/${slug}?currency=${currency}`,
     {
       cache: "no-store",
-    }
+    },
   );
 
   if (!res.ok) return null;

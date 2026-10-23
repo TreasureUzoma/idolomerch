@@ -11,8 +11,8 @@ import {
 } from "@workspace/ui/components/select";
 import ReactCountryFlag from "react-country-flag";
 import { useCartStore } from "@/store/cart";
-import { API_BASE_URL } from "@workspace/constants";
 import { toast } from "sonner";
+import { API_BASE_URL } from "@/lib/constants";
 
 interface Props {
   currencies?: string[];
@@ -46,14 +46,18 @@ export const CurrencyDropdown = ({
 
   // Fallback to query parameter if present, otherwise use global store currency
   const currentCurrency =
-    searchParams.get(CURRENCY_PARAM_KEY)?.toUpperCase() || storeCurrency || DEFAULT_CURRENCY;
+    searchParams.get(CURRENCY_PARAM_KEY)?.toUpperCase() ||
+    storeCurrency ||
+    DEFAULT_CURRENCY;
 
   const setCurrency = async (newCurrency: string) => {
     if (loading) return;
     setLoading(true);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/v1/products/rates?to=${newCurrency}`);
+      const res = await fetch(
+        `${API_BASE_URL}/api/v1/products/rates?to=${newCurrency}`,
+      );
       const data = await res.json();
       if (data.status === "success" && typeof data.rate === "number") {
         setStoreCurrency(newCurrency, data.rate);
@@ -62,7 +66,9 @@ export const CurrencyDropdown = ({
       }
     } catch (err) {
       console.error(err);
-      toast.error(`Error changing currency: ${err instanceof Error ? err.message : "Unknown error"}`);
+      toast.error(
+        `Error changing currency: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
       // Fallback: at least set the currency in the store without a rate
       setStoreCurrency(newCurrency, 1);
     } finally {
@@ -75,7 +81,11 @@ export const CurrencyDropdown = ({
   };
 
   return (
-    <Select value={currentCurrency} onValueChange={setCurrency} disabled={loading}>
+    <Select
+      value={currentCurrency}
+      onValueChange={setCurrency}
+      disabled={loading}
+    >
       <SelectTrigger className="w-[110px] sm:w-[130px] font-medium transition-colors">
         <SelectValue placeholder={DEFAULT_CURRENCY}>
           <div className="flex items-center gap-2">

@@ -7,7 +7,6 @@ import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import numeral from "numeral";
-import { API_BASE_URL } from "@workspace/constants";
 
 import type {
   OrderInputType,
@@ -28,6 +27,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Label } from "@workspace/ui/components/label";
+import { API_BASE_URL } from "@/lib/constants";
 
 interface CheckoutFormInput {
   userInfo?: UserInfoInput;
@@ -86,6 +86,16 @@ export default function CryptoCheckoutRedirectPage() {
   const initiateOrderAndRedirect = async () => {
     if (cart.length === 0) {
       toast.error("Cart is empty");
+      return;
+    }
+
+    const invalidItem = cart.find(
+      (item) => !Number.isFinite(item.price) || item.price <= 0,
+    );
+    if (invalidItem) {
+      toast.error(
+        `"${invalidItem.name}" has an invalid price. Please remove it and add it back to your cart.`,
+      );
       return;
     }
 
