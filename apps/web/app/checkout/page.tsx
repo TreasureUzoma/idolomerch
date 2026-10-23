@@ -7,7 +7,6 @@ import { useCartStore } from "@/store/cart";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import numeral from "numeral";
-import { API_BASE_URL } from "@workspace/constants";
 
 import type {
   OrderInputType,
@@ -28,6 +27,7 @@ import {
   CardTitle,
 } from "@workspace/ui/components/card";
 import { Label } from "@workspace/ui/components/label";
+import { API_BASE_URL } from "@/lib/constants";
 
 interface CheckoutFormInput {
   userInfo?: UserInfoInput;

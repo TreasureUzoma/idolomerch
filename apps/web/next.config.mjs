@@ -13,6 +13,14 @@ const nextConfig = {
       },
     ],
   },
+  async rewrites() {
+    return [
+      {
+        source: "/penna-api/:path+",
+        destination: `https://api.penna.dev/api/v1/external/:path+`,
+      },
+    ];
+  },
 };
 
 export default nextConfig;

@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCartStore } from "@/store/cart";
-import { API_BASE_URL } from "@workspace/constants";
+import { API_BASE_URL } from "@/lib/constants";
 
 export function CurrencySync() {
   const router = useRouter();
@@ -26,11 +26,16 @@ export function CurrencySync() {
     }
 
     // 2. If the URL currency parameter changes and does not match the store currency, sync the store.
-    if (urlCurrency !== storeCurrency && urlCurrency !== prevCurrencyRef.current) {
+    if (
+      urlCurrency !== storeCurrency &&
+      urlCurrency !== prevCurrencyRef.current
+    ) {
       prevCurrencyRef.current = urlCurrency;
       const syncRate = async () => {
         try {
-          const res = await fetch(`${API_BASE_URL}/api/v1/products/rates?to=${urlCurrency}`);
+          const res = await fetch(
+            `${API_BASE_URL}/api/v1/products/rates?to=${urlCurrency}`,
+          );
           const data = await res.json();
           if (data.status === "success" && typeof data.rate === "number") {
             setStoreCurrency(urlCurrency, data.rate);
@@ -44,7 +49,14 @@ export function CurrencySync() {
       };
       syncRate();
     }
-  }, [urlCurrency, storeCurrency, pathname, router, searchParams, setStoreCurrency]);
+  }, [
+    urlCurrency,
+    storeCurrency,
+    pathname,
+    router,
+    searchParams,
+    setStoreCurrency,
+  ]);
 
   return null;
 }

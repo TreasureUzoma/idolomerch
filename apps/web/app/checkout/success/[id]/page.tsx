@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@workspace/constants";
+import { API_BASE_URL } from "@/lib/constants";
 import { notFound } from "next/navigation";
 
 export default async function CheckoutSuccessPage({
@@ -37,7 +37,7 @@ export default async function CheckoutSuccessPage({
   // Calculate a simple estimated delivery date (e.g., 5 days from order date)
   const orderDate = new Date(order.createdAt);
   const estimatedDeliveryDate = new Date(
-    orderDate.setDate(orderDate.getDate() + 5)
+    orderDate.setDate(orderDate.getDate() + 5),
   ).toLocaleDateString();
 
   return (
