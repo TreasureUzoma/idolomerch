@@ -97,11 +97,10 @@ export const productCreateSchema = z.object({
   slug: z.string().min(3),
   description: z.string().min(1),
   shortDescription: z.string().min(1),
-  sku: z.string().min(1),
+  sku: z.string().min(1).optional(), // Auto-generated if not provided
   category: z.string().min(1),
   costPrice: numericString,
   price: numericString,
-  currency: currencyEnum.default("USD"),
   stockQuantity: z.number().int().min(0).default(0),
   inventoryTracking: z.boolean().default(true),
 
@@ -117,7 +116,9 @@ export const productCreateSchema = z.object({
   mainImage: z.string().url().optional(),
   galleryImages: z.array(z.string().url()).optional(),
   tags: z.array(z.string()).optional(),
-  attributes: z.record(z.string(), z.union([z.string(), z.number()])).optional(),
+  attributes: z
+    .record(z.string(), z.union([z.string(), z.number()]))
+    .optional(),
   isFeatured: z.boolean().default(false).optional(),
   isNew: z.boolean().default(false).optional(),
   status: productStatusEnum.default("draft"),
@@ -162,7 +163,7 @@ export const isValidSlug = z.object({
     .max(50)
     .regex(
       /^[a-z0-9]+(?:[-_][a-z0-9]+)*$/i,
-      "Slug can only contain letters, numbers, hyphens, and underscores"
+      "Slug can only contain letters, numbers, hyphens, and underscores",
     ),
 });
 

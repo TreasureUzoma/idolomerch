@@ -4,5 +4,7 @@ export const meta = {
   email: "hello@idolo.dev",
   x: "idolodev",
   github: "https://github.com/treasureuzoma/idolomerch",
-  website: "https://idolo.dev",
+  website: "https://store.idolo.dev",
+  portfolio: "https://idolodev.com",
+  twitter: "https://twitter.com/idolodev",
 };

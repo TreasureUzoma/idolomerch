@@ -45,7 +45,7 @@ export const NewsletterForm = () => {
   };
 
   return (
-    <form className="flex flex-col min-w-sm gap-2" onSubmit={handleSubmit}>
+    <form className="flex flex-col px-5 min-w-sm gap-2" onSubmit={handleSubmit}>
       <h4 className="font-medium text-lg">Subscribe for updates</h4>
 
       {subscribed ? (

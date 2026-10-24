@@ -8,6 +8,7 @@ import { currencyConverter } from "./currency-converter";
 import { products } from "../schema/products";
 import { db } from "..";
 import { paginate } from "../../utils/paginations";
+import { generateShortSKU } from "../../utils/generate-sku";
 
 const BASE_CURRENCY = "USD";
 
@@ -20,18 +21,10 @@ type ServiceResponse<T> = Promise<{
 type ProductCategory = (typeof products.category.enumValues)[number];
 
 export const createProduct = async (
-  body: ProductCreateInput
+  body: ProductCreateInput,
 ): ServiceResponse<typeof products.$inferSelect> => {
   try {
-    const {
-      price,
-      costPrice,
-      weight,
-      currency: sourceCurrency = BASE_CURRENCY,
-      category,
-      dropDate,
-      ...rest
-    } = body;
+    const { price, costPrice, weight, category, dropDate, sku, ...rest } = body;
 
     let finalSalePrice = Number(price);
     let finalCostPrice = Number(costPrice);
@@ -46,19 +39,14 @@ export const createProduct = async (
       }
     }
 
-    if (sourceCurrency !== BASE_CURRENCY) {
-      const conversionRate = await currencyConverter.getRate(
-        sourceCurrency,
-        BASE_CURRENCY
-      );
-      finalSalePrice = finalSalePrice * conversionRate;
-      finalCostPrice = finalCostPrice * conversionRate;
-    }
+    // Auto-generate SKU if not provided
+    const finalSKU = sku || generateShortSKU(category);
 
     const inserted = await db
       .insert(products)
       .values({
         ...rest,
+        sku: finalSKU,
         category: category as ProductCategory,
         salePrice: finalSalePrice.toFixed(2),
         costPrice: finalCostPrice.toFixed(2),
@@ -71,14 +59,33 @@ export const createProduct = async (
 
     return { status: "success", data: inserted[0] };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Failed to create product";
+    let message = "Failed to create product";
+
+    if (e instanceof Error) {
+      // Check for specific PostgreSQL constraint violations
+      if (
+        e.message.includes("duplicate key") ||
+        e.message.includes("unique constraint")
+      ) {
+        if (e.message.includes("products_sku_unique")) {
+          message = `A product with SKU "${sku || "auto-generated"}" already exists`;
+        } else if (e.message.includes("products_slug_unique")) {
+          message = `A product with slug "${body.slug}" already exists`;
+        } else {
+          message = "A product with these details already exists";
+        }
+      } else {
+        message = e.message;
+      }
+    }
+
     return { status: "error", error: message };
   }
 };
 
 export const updateProduct = async (
   id: string,
-  body: ProductUpdateInput
+  body: ProductUpdateInput,
 ): ServiceResponse<typeof products.$inferSelect> => {
   try {
     const {
@@ -115,7 +122,7 @@ export const updateProduct = async (
       if (currencyToUse !== BASE_CURRENCY) {
         conversionRate = await currencyConverter.getRate(
           currencyToUse,
-          BASE_CURRENCY
+          BASE_CURRENCY,
         );
       }
 
@@ -141,13 +148,32 @@ export const updateProduct = async (
 
     return { status: "success", data: updated[0] };
   } catch (e) {
-    const message = e instanceof Error ? e.message : "Failed to update product";
+    let message = "Failed to update product";
+
+    if (e instanceof Error) {
+      // Check for specific PostgreSQL constraint violations
+      if (
+        e.message.includes("duplicate key") ||
+        e.message.includes("unique constraint")
+      ) {
+        if (e.message.includes("products_sku_unique")) {
+          message = `A product with SKU "${body.sku}" already exists`;
+        } else if (e.message.includes("products_slug_unique")) {
+          message = `A product with slug "${body.slug}" already exists`;
+        } else {
+          message = "A product with these details already exists";
+        }
+      } else {
+        message = e.message;
+      }
+    }
+
     return { status: "error", error: message };
   }
 };
 
 export const deleteProduct = async (
-  id: string
+  id: string,
 ): ServiceResponse<{ id: string }> => {
   try {
     const deleted = await db
@@ -166,7 +192,7 @@ export const deleteProduct = async (
 
 export const getProducts = async (
   params: ProductsParams,
-  lookup?: { id?: string; slug?: string; isAdmin?: boolean }
+  lookup?: { id?: string; slug?: string; isAdmin?: boolean },
 ): ServiceResponse<any> => {
   try {
     const {
@@ -270,7 +296,7 @@ export const getProducts = async (
     if (TARGET_CURRENCY !== BASE_CURRENCY && productData.length > 0) {
       const conversionRate = await currencyConverter.getRate(
         BASE_CURRENCY,
-        TARGET_CURRENCY
+        TARGET_CURRENCY,
       );
 
       productData = productData.map((p: any) => {

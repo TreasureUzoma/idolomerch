@@ -1,7 +1,13 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 
+const envUrl =
+  process.env.SERVER_URL ||
+  process.env.NEXT_PUBLIC_SERVER_URL ||
+  process.env.API_URL ||
+  process.env.NEXT_PUBLIC_API_URL ||
+  "https://idolomerchserver.vercel.app";
 const api: AxiosInstance = axios.create({
-  baseURL: `${process.env.SERVER_URL || process.env.NEXT_PUBLIC_SERVER_URL || process.env.API_URL || process.env.NEXT_PUBLIC_API_URL || "https://idolomerchserver.vercel.app"}/api/v1`,
+  baseURL: `${envUrl}/api/v1`,
   withCredentials: true,
 });
 
@@ -20,7 +26,7 @@ api.interceptors.response.use(
     }
 
     return Promise.reject(new Error(message));
-  }
+  },
 );
 
 export default api;

@@ -21,10 +21,14 @@ const fontMono = JetBrains_Mono({
   variable: "--font-mono",
 });
 
+const description =
+  "Limited drops, playful designs, and chaotic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.";
 export const metadata: Metadata = {
-  title: "idolo.dev store - Shop weirdly interesting merchs by idolodev.",
-  description:
-    "Uncover limited drops, playful designs, and chaoqtic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
+  title: {
+    default: "idolo.dev store - Shop weirdly interesting merch by idolodev.",
+    template: "%s | idolo.dev store",
+  },
+  description,
   keywords: [
     "merch",
     "idolodev",
@@ -36,11 +40,11 @@ export const metadata: Metadata = {
     "idolo.dev merch",
     "idolo merch",
   ],
-  authors: [{ name: "idolodev", url: meta.website }],
+  authors: [{ name: "idolodev", url: meta.portfolio }],
   creator: "idolodev",
   publisher: "idolodev",
   openGraph: {
-    title: "idolo.dev store - Shop weirdly interesting merchs by idolodev.",
+    title: "idolo.dev store - Shop weirdly interesting merch by idolodev.",
     description:
       "Uncover limited drops, playful designs, and chaoqtic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
     url: meta.website,
@@ -51,8 +55,8 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "idolo.dev store - Shop weirdly interesting merchs by idolodev.",
-    description:
-      "Uncover limited drops, playful designs, and chaoqtic-good merch by idolodev. Built for fans who like it different, weird, and a little wonderful.",
+    description,
+    creator: "@idolodev",
   },
 };
 

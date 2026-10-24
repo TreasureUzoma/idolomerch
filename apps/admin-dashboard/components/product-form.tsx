@@ -69,7 +69,7 @@ export function ProductForm({
 
   const methods = useForm<FormValues>({
     resolver: zodResolver(
-      isCreate ? productCreateSchema : productUpdateSchema
+      isCreate ? productCreateSchema : productUpdateSchema,
     ) as Resolver<FormValues>,
     defaultValues: {
       ...cleanedDefaultValues,
@@ -154,9 +154,9 @@ export function ProductForm({
 
         <div className="grid grid-cols-3 gap-4">
           <div className="flex flex-col gap-2">
-            <Label>SKU</Label>
+            <Label>SKU (Optional)</Label>
             <Input
-              placeholder="Unique stock keeping unit"
+              placeholder="Auto-generated if empty"
               {...methods.register("sku")}
             />
             <ErrorMessage message={errors.sku?.message} />
@@ -190,9 +190,9 @@ export function ProductForm({
 
         <CustomGalleryImagesInput label="Gallery Images" name="galleryImages" />
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
-            <Label>Price ($)</Label>
+            <Label>Price (USD)</Label>
             <Input
               type="number"
               placeholder="0.00"
@@ -202,32 +202,13 @@ export function ProductForm({
           </div>
 
           <div className="flex flex-col gap-2">
-            <Label>Cost Price ($)</Label>
+            <Label>Cost Price (USD)</Label>
             <Input
               type="number"
               placeholder="0.00"
               {...methods.register("costPrice")}
             />
             <ErrorMessage message={errors.costPrice?.message} />
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <Label>Currency</Label>
-            <Controller
-              name="currency"
-              control={methods.control}
-              render={({ field }) => (
-                <Select onValueChange={field.onChange} value={field.value}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select currency" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="USD">USD</SelectItem>
-                  </SelectContent>
-                </Select>
-              )}
-            />
-            <ErrorMessage message={errors.currency?.message} />
           </div>
         </div>
 
